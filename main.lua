@@ -7,3 +7,6 @@
 -- work. If not, see <https://creativecommons.org/licenses/by-nc-sa/4.0/>.
 
 local mod = RegisterMod("Krieg", 1)
+
+local Buzzaxe = include "resources.scripts.Buzzaxe"
+Buzzaxe.init(mod)
