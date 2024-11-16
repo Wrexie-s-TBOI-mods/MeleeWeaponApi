@@ -10,3 +10,6 @@ local mod = RegisterMod("Krieg", 1)
 
 local Buzzaxe = include "resources.scripts.Buzzaxe"
 Buzzaxe.init(mod)
+
+local BuzzaxeRampage = include "resources.scripts.BuzzaxeRampage"
+BuzzaxeRampage.init(mod)
