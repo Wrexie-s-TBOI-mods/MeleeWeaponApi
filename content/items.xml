@@ -15,13 +15,12 @@
         description="Go for the glory, it's rampage time !"
         quality="4"
         gfx="buzzaxe.png"
-        chargetype="timed"
-        maxcharges="3600"
-        initcharge="3600"
-        hidden="true"
+        chargetype="special"
+        maxcharges="120"
+        initcharge="120"
         cache="damage speed"
         cooldown="150"
         persistent="true"
         cleareffectsonremove="true"
     />
-</items> 
+</items>

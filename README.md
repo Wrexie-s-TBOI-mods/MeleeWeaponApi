@@ -88,9 +88,9 @@ Starts with **Buzzaxe** as pocket active item.
 
 ### TODOS
 
-- [ ] Charge method
+- [x] Charge method
   - [x] Time
-  - [ ] Prevent room clear charge
+  - [x] Prevent room clear charge
 - [ ] Bloodlust
   - [ ] HUD display
   - [ ] Stacking
@@ -98,7 +98,7 @@ Starts with **Buzzaxe** as pocket active item.
   - [ ] Most likely make it a Krieg thing rather than Buzzaxe
 - [ ] Buzzaxe Rampage
   - [x] Effect duration
-  - [ ] Replace terars with melee
+  - [ ] Replace tears with melee
   - [x] Damage multiplier
   - [x] Speed multiplier
   - [x] Release the Beast

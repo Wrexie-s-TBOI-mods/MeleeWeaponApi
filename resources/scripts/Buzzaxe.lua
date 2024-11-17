@@ -11,32 +11,38 @@
 ------------------------
 
 ---@class BuzzaxeState
----@field beast         boolean Is the current rampage Beast mode ?
+---@field beast   boolean Is the current rampage Beast mode ?
+---@field tick    integer 30-based round clock counter for item charge
 
-local Buzzaxe = {
-    ID = Isaac.GetItemIdByName "Buzzaxe",
+local Buzzaxe = {}
 
-    const = {
-        --- Max number of hearts to trigger Relase The Beast.
-        --- 1 unit represents half a heart.
-        RTB_THRESHOLD = 2,
+Buzzaxe.ID = Isaac.GetItemIdByName "Buzzaxe"
 
-        MULT_SPEED = 1.4,
+Buzzaxe.const = {
+    --- Max number of hearts to trigger Relase The Beast.
+    --- 1 unit represents half a heart.
+    RTB_THRESHOLD = 2,
 
-        MULT_DAMAGE = {
-            --- In Beast mode
-            [true] = 5,
+    MULT_SPEED = 1.4,
 
-            --- In non Beast mode
-            [false] = 4,
-        },
+    MULT_DAMAGE = {
+        --- In Beast mode
+        [true] = 5,
 
-        MAX_SPEED = 2,
+        --- In non Beast mode
+        [false] = 4,
     },
 
-    ---@type table<integer, BuzzaxeState>
-    state = {},
+    MAX_SPEED = 2,
+
+    --- https://wofsauge.github.io/IsaacDocs/rep/enums/ModCallbacks.html?h=post+update#mc_post_update
+    MAX_TICK = 60,
+
+    MAX_CHARGES = Isaac.GetItemConfig():GetCollectible(Buzzaxe.ID).MaxCharges,
 }
+
+---@type table<integer, BuzzaxeState>
+Buzzaxe.state = {}
 
 ---
 --- STATE MANAGEMENT
@@ -49,6 +55,7 @@ function Buzzaxe:getState(player)
     if Buzzaxe.state[id] == nil then
         Buzzaxe.state[id] = {
             beast = false,
+            tick = 0,
         }
     end
 
@@ -81,9 +88,44 @@ function Buzzaxe:isRampaging(player)
     return player:GetEffects():HasCollectibleEffect(Buzzaxe.ID)
 end
 
+--- Advance the clock for a given player.
+--- Returns `true` if clock did a full rotation.
+---@param player EntityPlayer
+function Buzzaxe:tick(player)
+    local state = Buzzaxe:getState(player)
+
+    state.tick = state.tick + 1
+    if state.tick > Buzzaxe.const.MAX_TICK then
+        state.tick = 0
+        return true
+    end
+
+    return false
+end
+
 ---
 --- MOD CALLBACKS
 ------------------------
+
+function Buzzaxe:chargeClock()
+    local game = Game()
+    for i = 0, game:GetNumPlayers() do
+        local player = game:GetPlayer(i)
+        if not player:HasCollectible(Buzzaxe.ID) or Buzzaxe:isRampaging(player) then
+            goto ClockNextPlayer
+        end
+
+        ---@type ActiveSlot
+        ---@diagnostic disable-next-line: assign-type-mismatch Presence of the item is checked above, slot cannot be nil
+        local slot = Buzzaxe:getSlot(player)
+        local charge = player:GetActiveCharge(slot)
+        if charge < Buzzaxe.const.MAX_CHARGES and Buzzaxe:tick(player) then
+            player:AddActiveCharge(1, slot, charge >= Buzzaxe.const.MAX_CHARGES - 3, false, true)
+        end
+
+        ::ClockNextPlayer::
+    end
+end
 
 ---@param item CollectibleType
 ---@param rng RNG
@@ -152,22 +194,16 @@ function Buzzaxe:postRampage(player)
     end
 
     state.beast = false
-end
-
-function Buzzaxe:preventBatteryPickup(_pickup, entity)
-    local player = entity:ToPlayer()
-    if player and player:GetActiveItem() == Buzzaxe.ID then
-        return false
-    end
+    state.tick = 0
 end
 
 function Buzzaxe.init(mod)
+    mod:AddCallback(ModCallbacks.MC_POST_UPDATE, Buzzaxe.chargeClock)
     mod:AddCallback(ModCallbacks.MC_PRE_USE_ITEM, Buzzaxe.onPreUseItem, Buzzaxe.ID)
     mod:AddCallback(ModCallbacks.MC_USE_ITEM, Buzzaxe.onUseItem, Buzzaxe.ID)
     mod:AddCallback(ModCallbacks.MC_POST_PLAYER_UPDATE, Buzzaxe.postRampage, PlayerVariant.PLAYER)
     mod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, Buzzaxe.onEvalCacheDamage, CacheFlag.CACHE_DAMAGE)
     mod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, Buzzaxe.onEvalCacheSpeed, CacheFlag.CACHE_SPEED)
-    -- mod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, Buzzaxe.preventBatteryPickup, PickupVariant.PICKUP_LIL_BATTERY)
 end
 
 return Buzzaxe
