@@ -17,16 +17,11 @@
         gfx="buzzaxe.png"
         chargetype="timed"
         maxcharges="3600"
-        initcharge="0"
-    />
-    <passive
-        id="1"
-        name="Buzzaxe Rampage"
-        quality="4"
-        cooldown="450"
+        initcharge="3600"
         hidden="true"
-        persistent="true"
         cache="damage speed"
-        tags="quest nogreed noeden"
+        cooldown="150"
+        persistent="true"
+        cleareffectsonremove="true"
     />
 </items> 
