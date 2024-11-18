@@ -1,0 +1,4 @@
+std = "isaac"
+
+[lints]
+multiple_statements = "allow"

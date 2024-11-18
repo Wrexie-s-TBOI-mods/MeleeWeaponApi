@@ -1,0 +1,489 @@
+---
+base: lua53
+globals:
+  include:
+    args:
+      - type: string
+        required: true
+  ActionTriggers:
+    any: true
+  ActiveSlot:
+    any: true
+  BabySubType:
+    any: true
+  BackdropType:
+    any: true
+  BatterySubType:
+    any: true
+  BedSubType:
+    any: true
+  BitSet128:
+    any: true
+  BombSubType:
+    any: true
+  BombVariant:
+    any: true
+  ButtonAction:
+    any: true
+  CacheFlag:
+    any: true
+  Card:
+    any: true
+  Challenge:
+    any: true
+  ChampionColor:
+    any: true
+  ChestSubType:
+    any: true
+  CoinSubType:
+    any: true
+  CollectibleType:
+    any: true
+  Color:
+    any: true
+  CppContainer:
+    any: true
+  DamageFlag:
+    any: true
+  Difficulty:
+    any: true
+  Direction:
+    any: true
+  DoorSlot:
+    any: true
+  DoorState:
+    any: true
+  DoorVariant:
+    any: true
+  EffectVariant:
+    any: true
+  Entity:
+    any: true
+  EntityBomb:
+    any: true
+  EntityCollisionClass:
+    any: true
+  EntityEffect:
+    any: true
+  EntityFamiliar:
+    any: true
+  EntityFlag:
+    any: true
+  EntityGridCollisionClass:
+    any: true
+  EntityKnife:
+    any: true
+  EntityLaser:
+    any: true
+  EntityNPC:
+    any: true
+  EntityPartition:
+    any: true
+  EntityPickup:
+    any: true
+  EntityPlayer:
+    any: true
+  EntityProjectile:
+    any: true
+  EntityPtr:
+    any: true
+  EntityRef:
+    any: true
+  EntityTear:
+    any: true
+  EntityType:
+    any: true
+  FamiliarVariant:
+    any: true
+  Font:
+    any: true
+  Game:
+    any: true
+  GameStateFlag:
+    any: true
+  GetPtrHash:
+    any: true
+  GridCollisionClass:
+    any: true
+  GridEntity:
+    any: true
+  GridEntityDesc:
+    any: true
+  GridEntityDoor:
+    any: true
+  GridEntityPit:
+    any: true
+  GridEntityPoop:
+    any: true
+  GridEntityPressurePlate:
+    any: true
+  GridEntityRock:
+    any: true
+  GridEntitySpikes:
+    any: true
+  GridEntityTNT:
+    any: true
+  GridEntityType:
+    any: true
+  GridRooms:
+    any: true
+  HUD:
+    any: true
+  HeartSubType:
+    any: true
+  Input:
+    any: true
+  InputHook:
+    any: true
+  Isaac:
+    any: true
+  ItemConfig:
+    any: true
+  ItemPool:
+    any: true
+  ItemPoolType:
+    any: true
+  ItemType:
+    any: true
+  KColor:
+    any: true
+  KeySubType:
+    any: true
+  Keyboard:
+    any: true
+  LaserOffset:
+    any: true
+  LaserSubType:
+    any: true
+  Level:
+    any: true
+  LevelCurse:
+    any: true
+  LevelStage:
+    any: true
+  LevelStateFlag:
+    any: true
+  LocustSubtypes:
+    any: true
+  ModCallbacks:
+    any: true
+  Mouse:
+    any: true
+  Music:
+    any: true
+  MusicManager:
+    any: true
+  NpcState:
+    any: true
+  NullItemID:
+    any: true
+  Options:
+    any: true
+  PathFinder:
+    any: true
+  PickupPrice:
+    any: true
+  PickupVariant:
+    any: true
+  PillColor:
+    any: true
+  PillEffect:
+    any: true
+  PlayerForm:
+    any: true
+  PlayerSpriteLayer:
+    any: true
+  PlayerType:
+    any: true
+  PlayerTypes:
+    any: true
+  PlayerVariant:
+    any: true
+  PoopPickupSubType:
+    any: true
+  PoopSpellType:
+    any: true
+  ProjectileFlags:
+    any: true
+  ProjectileParams:
+    any: true
+  ProjectileVariant:
+    any: true
+  QueueItemData:
+    any: true
+  REPENTANCE:
+    any: true
+  RNG:
+    any: true
+  Random:
+    any: true
+  RandomVector:
+    any: true
+  RegisterMod:
+    any: true
+  RenderMode:
+    any: true
+  Room:
+    any: true
+  RoomConfig:
+    any: true
+  RoomDescriptor:
+    any: true
+  RoomShape:
+    any: true
+  RoomTransitionAnim:
+    any: true
+  RoomType:
+    any: true
+  SFXManager:
+    any: true
+  SackSubType:
+    any: true
+  SeedEffect:
+    any: true
+  Seeds:
+    any: true
+  ShockwaveParams:
+    any: true
+  SkinColor:
+    any: true
+  SortingLayer:
+    any: true
+  SoundEffect:
+    any: true
+  Sprite:
+    any: true
+  StageType:
+    any: true
+  StartDebug:
+    any: true
+  TearFlags:
+    any: true
+  TearParams:
+    any: true
+  TearVariant:
+    any: true
+  TemporaryEffect:
+    any: true
+  TemporaryEffects:
+    any: true
+  TrinketType:
+    any: true
+  UseFlag:
+    any: true
+  Vector:
+    any: true
+  WeaponType:
+    any: true
+  EID:
+    any: true
+  CustomGameOver:
+    any: true
+  Encyclopedia:
+    any: true
+  DetailedRespawn:
+    any: true
+  MinimapAPI:
+    any: true
+  Achievement:
+    any: true
+  Ambush:
+    any: true
+  AnimRenderFlags:
+    any: true
+  AnnouncerVoiceMode:
+    any: true
+  AutocompleteType:
+    any: true
+  BagOfCraftingPickup:
+    any: true
+  BestiaryMenu:
+    any: true
+  BitwiseDebugFlag:
+    any: true
+  BombCostumeLayer:
+    any: true
+  BossType:
+    any: true
+  CameraStype:
+    any: true
+  ChallengeMenu:
+    any: true
+  ChallengeParam:
+    any: true
+  CharacterMenu:
+    any: true
+  ChromaticFireVariant:
+    any: true
+  ClearIcons:
+    any: true
+  CompletionType:
+    any: true
+  Console:
+    any: true
+  ConsoleFont:
+    any: true
+  ControllerSelectMenu:
+    any: true
+  CutscenesMenu:
+    any: true
+  Debug:
+    any: true
+  DebugFlag:
+    any: true
+  DebugRenderer:
+    any: true
+  DialogButtons:
+    any: true
+  DialogIcons:
+    any: true
+  DialogReturn:
+    any: true
+  Dimension:
+    any: true
+  DipSubType:
+    any: true
+  Ending:
+    any: true
+  EntityConfig:
+    any: true
+  EntityPoopVariant:
+    any: true
+  EntityTag:
+    any: true
+  EventCounter:
+    any: true
+  ExtraHudStyle:
+    any: true
+  FadeoutTarget:
+    any: true
+  FollowerPriority:
+    any: true
+  Giantbook:
+    any: true
+  GibFlag:
+    any: true
+  GLSLType:
+    any: true
+  GridPoopVariant:
+    any: true
+  GUI:
+    any: true
+  HealthType:
+    any: true
+  ImGuiCallback:
+    any: true
+  ImGuiColor:
+    any: true
+  ImGuiData:
+    any: true
+  ImGuiElement:
+    any: true
+  ImGuiNotificationType:
+    any: true
+  ItemAnim:
+    any: true
+  KeyConfigMenu:
+    any: true
+  KnifeSubType:
+    any: true
+  KnifeVariant:
+    any: true
+  Language:
+    any: true
+  LineCheckMode:
+    any: true
+  MainMenu:
+    any: true
+  MainMenuType:
+    any: true
+  MenuManager:
+    any: true
+  ModsMenu:
+    any: true
+  MouseButton:
+    any: true
+  NightmareScene:
+    any: true
+  PCTypes:
+    any: true
+  PauseMenu:
+    any: true
+  PauseMenuStates:
+    any: true
+  PedestalType:
+    any: true
+  PillCardSlot:
+    any: true
+  PocketItemType:
+    any: true
+  PressurePlateVariant:
+    any: true
+  ProceduralEffectActionType:
+    any: true
+  ProceduralEffectConditionType:
+    any: true
+  ProceduralItemManager:
+    any: true
+  ProjectileMode:
+    any: true
+  PurityState:
+    any: true
+  RetractingSpikesVariant:
+    any: true
+  RoomConfigHolder:
+    any: true
+  RoomSubType:
+    any: true
+  SaveMenu:
+    any: true
+  ShaderType:
+    any: true
+  SlotVariant:
+    any: true
+  SpecialSeedsMenu:
+    any: true
+  Stagetransition:
+    any: true
+  StbGridType:
+    any: true
+  StbPoopSubType:
+    any: true
+  StbRailVariant:
+    any: true
+  StbRockSubType:
+    any: true
+  StbTeleporterSubType:
+    any: true
+  StbType:
+    any: true
+  StatsMenu:
+    any: true
+  StatsScreen:
+    any: true
+  StatsType:
+    any: true
+  StatsWatcher:
+    any: true
+  StatsWatcherFlags:
+    any: true
+  StatsWatcherType:
+    any: true
+  StatsWatcherVariant:
+    any: true
+  TaintedMarksGroup:
+    any: true
+  TeleporterVariant:
+    any: true
+  TitleMenu:
+    any: true
+  VanityPCTypes:
+    any: true
+  WispSubType:
+    any: true
+  XMLData:
+    any: true
+  XMLNode:
+    any: true
+  REPENTOGON:
+    any: true
