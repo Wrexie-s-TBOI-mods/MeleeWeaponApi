@@ -20,7 +20,7 @@
         chargetype="special"
         maxcharges="120"
         initcharge="120"
-        cache="damage speed"
+        cache="damage speed weapon"
         cooldown="150"
         persistent="true"
         cleareffectsonremove="true" />

@@ -14,12 +14,12 @@ local inspect = require "resources.scripts.lib.inspect"
 ------------------------
 
 ---@class BuzzaxeState
----@field active    boolean       Has the weapon been activated recently ?
----@field beast     boolean       Is the current rampage in Beast mode ?
----@field clock     Clock         Frame counter for various time-based actions
----@field effect    EntityEffect  Weapon visuals
----@field hearts    integer       Red heart units at the time of activation
----@field shoot     boolean       During rampage, is the player holding shoot after a swing ?
+---@field clock         Clock           Frame counter for various time-based actions
+---@field active        boolean         Has the weapon been activated recently ?
+---@field beast         boolean         Is the current rampage in Beast mode ?
+---@field hearts        integer         Red heart units at the time of activation
+---@field shoot         boolean         During rampage, is the player holding shoot after a swing ?
+---@field weapon        WeaponType      Player's weapon type when not rampaging
 
 local Buzzaxe = {}
 
@@ -62,15 +62,15 @@ Buzzaxe.state = {}
 function Buzzaxe:getState(player)
     local id = player:GetPlayerIndex()
 
+    -- TODO: Maybe move this into a MC_POST_PLAYER_INIT
     if Buzzaxe.state[id] == nil then
         Buzzaxe.state[id] = {
+            clock = Clock(Buzzaxe.const.CLOCK_CHARGE_TICKS),
             active = false,
             beast = false,
-            clock = Clock(Buzzaxe.const.CLOCK_CHARGE_TICKS),
-            ---@diagnostic disable-next-line: assign-type-mismatch
-            effect = nil,
             hearts = 0,
             shoot = false,
+            weapon = WeaponType.WEAPON_TEARS,
         }
     end
 
@@ -128,40 +128,25 @@ end
 ---@param flags integer
 ---@param slot ActiveSlot
 ---@param custom integer
-function Buzzaxe:onPreUseItem(item, rng, player, flags, slot, custom)
-    if (flags & UseFlag.USE_CARBATTERY) == UseFlag.USE_CARBATTERY then return end
-    print "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"
-    print "Pre-rampage"
-
-    local state = Buzzaxe:getState(player)
-    local effect = Isaac.Spawn(EntityType.ENTITY_EFFECT, Buzzaxe.EFFECT, 0, player.Position, Vector.Zero, player)
-        :ToEffect()
-    if not effect then
-        error "Coudln't spawn Buzzaxe visuals. (this message should never appear)"
-        return true
-    end
-
-    effect:FollowParent(player)
-    state.effect = effect
-    state.hearts = player:GetHearts()
-    state.beast = state.hearts <= Buzzaxe.const.RTB_THRESHOLD
-end
-
----@param item CollectibleType
----@param rng RNG
----@param player EntityPlayer
----@param flags integer
----@param slot ActiveSlot
----@param custom integer
 function Buzzaxe:onUseItem(item, rng, player, flags, slot, custom)
     if (flags & UseFlag.USE_CARBATTERY) == UseFlag.USE_CARBATTERY then return end
-    print "Rampage"
+    print "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"
+    print "[Buzzaxe#onUse] start"
 
     local state = Buzzaxe:getState(player)
+    local weapon = player:GetWeapon(1)
 
+    state.hearts = player:GetHearts()
+    state.beast = state.hearts <= Buzzaxe.const.RTB_THRESHOLD
     state.active = true
-    if state.beast and player:CanPickRedHearts() then player:AddHearts(player:GetMaxHearts() - state.hearts) end
 
+    if state.beast and player:CanPickRedHearts() then player:AddHearts(player:GetMaxHearts() - state.hearts) end
+    if weapon then
+        state.weapon = weapon:GetWeaponType()
+        Isaac.DestroyWeapon(weapon)
+    end
+
+    print "[Buzzaxe#onUse] done"
     return {
         ShowAnim = true,
         Remove = false,
@@ -195,7 +180,7 @@ function Buzzaxe:postRampage(player)
 
     local state = Buzzaxe:getState(player)
     if not state.active then return end
-    print "Post-rampage"
+    print "[Buzzaxe#postRampage] start"
 
     local slot = Buzzaxe:getSlot(player)
     if slot ~= nil and state.beast then player:FullCharge(slot, true) end
@@ -203,15 +188,16 @@ function Buzzaxe:postRampage(player)
     state.active = false
     state.beast = false
     state.shoot = false
-    state.effect:Remove()
-    state.effect = nil
     state.clock:reset(Buzzaxe.const.CLOCK_CHARGE_TICKS)
+
+    local weapon = Isaac.CreateWeapon(state.weapon, player)
+    player:SetWeapon(weapon, 1)
+    print "[Buzzaxe#postRampage] done"
 end
 
 ---@param mod ModReference
 function Buzzaxe.init(mod)
     mod:AddCallback(ModCallbacks.MC_POST_UPDATE, Buzzaxe.chargeClock)
-    mod:AddCallback(ModCallbacks.MC_PRE_USE_ITEM, Buzzaxe.onPreUseItem, Buzzaxe.ID)
     mod:AddCallback(ModCallbacks.MC_USE_ITEM, Buzzaxe.onUseItem, Buzzaxe.ID)
     mod:AddCallback(ModCallbacks.MC_POST_PLAYER_UPDATE, Buzzaxe.postRampage, PlayerVariant.PLAYER)
     mod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, Buzzaxe.onEvalCacheDamage, CacheFlag.CACHE_DAMAGE)
