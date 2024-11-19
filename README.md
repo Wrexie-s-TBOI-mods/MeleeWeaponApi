@@ -102,6 +102,7 @@ Starts with **Buzzaxe** as pocket active item.
   - [x] Damage multiplier
   - [x] Speed multiplier
   - [x] Release the Beast
+    - [ ] Handle Rotten Hearts
     - [x] Full heal
     - [x] Item recharge
     - [x] Damage multiplier

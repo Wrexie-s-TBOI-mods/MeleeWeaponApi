@@ -7,19 +7,24 @@
 -- work. If not, see <https://creativecommons.org/licenses/by-nc-sa/4.0/>.
 
 local Clock = include "resources.scripts.lib.Clock"
+local inspect = require "resources.scripts.lib.inspect"
 
 ---
 --- META DEFINITIONS
 ------------------------
 
 ---@class BuzzaxeState
----@field clock   Clock   Frame counter for various time-based actions
----@field beast   boolean Is the current rampage in Beast mode ?
----@field shoot   boolean During rampage, is the player holding shoot after a swing ?
+---@field active    boolean       Has the weapon been activated recently ?
+---@field beast     boolean       Is the current rampage in Beast mode ?
+---@field clock     Clock         Frame counter for various time-based actions
+---@field effect    EntityEffect  Weapon visuals
+---@field hearts    integer       Red heart units at the time of activation
+---@field shoot     boolean       During rampage, is the player holding shoot after a swing ?
 
 local Buzzaxe = {}
 
 Buzzaxe.ID = Isaac.GetItemIdByName "Buzzaxe"
+Buzzaxe.EFFECT = Isaac.GetEntityVariantByName "Buzzaxe Visuals"
 
 Buzzaxe.const = {
     --- Max number of hearts to trigger Relase The Beast.
@@ -45,6 +50,7 @@ Buzzaxe.const = {
     MAX_CHARGES = Isaac.GetItemConfig():GetCollectible(Buzzaxe.ID).MaxCharges,
 }
 
+--- Table index is the player index
 ---@type table<integer, BuzzaxeState>
 Buzzaxe.state = {}
 
@@ -58,8 +64,12 @@ function Buzzaxe:getState(player)
 
     if Buzzaxe.state[id] == nil then
         Buzzaxe.state[id] = {
+            active = false,
             beast = false,
             clock = Clock(Buzzaxe.const.CLOCK_CHARGE_TICKS),
+            ---@diagnostic disable-next-line: assign-type-mismatch
+            effect = nil,
+            hearts = 0,
             shoot = false,
         }
     end
@@ -115,25 +125,42 @@ end
 ---@param item CollectibleType
 ---@param rng RNG
 ---@param player EntityPlayer
----@param useFlags integer
+---@param flags integer
 ---@param slot ActiveSlot
 ---@param custom integer
-function Buzzaxe:onPreUseItem(item, rng, player, useFlags, slot, custom)
+function Buzzaxe:onPreUseItem(item, rng, player, flags, slot, custom)
+    if (flags & UseFlag.USE_CARBATTERY) == UseFlag.USE_CARBATTERY then return end
+    print "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"
+    print "Pre-rampage"
+
     local state = Buzzaxe:getState(player)
-    state.beast = Buzzaxe:shouldReleaseTheBeast(player)
+    local effect = Isaac.Spawn(EntityType.ENTITY_EFFECT, Buzzaxe.EFFECT, 0, player.Position, Vector.Zero, player)
+        :ToEffect()
+    if not effect then
+        error "Coudln't spawn Buzzaxe visuals. (this message should never appear)"
+        return true
+    end
+
+    effect:FollowParent(player)
+    state.effect = effect
+    state.hearts = player:GetHearts()
+    state.beast = state.hearts <= Buzzaxe.const.RTB_THRESHOLD
 end
 
 ---@param item CollectibleType
 ---@param rng RNG
 ---@param player EntityPlayer
----@param useFlags integer
+---@param flags integer
 ---@param slot ActiveSlot
 ---@param custom integer
-function Buzzaxe:onUseItem(item, rng, player, useFlags, slot, custom)
-    local state = Buzzaxe:getState(player)
-    local hearts = player:GetMaxHearts()
+function Buzzaxe:onUseItem(item, rng, player, flags, slot, custom)
+    if (flags & UseFlag.USE_CARBATTERY) == UseFlag.USE_CARBATTERY then return end
+    print "Rampage"
 
-    if state.beast and player:CanPickRedHearts() then player:AddHearts(hearts - Buzzaxe.const.RTB_THRESHOLD) end
+    local state = Buzzaxe:getState(player)
+
+    state.active = true
+    if state.beast and player:CanPickRedHearts() then player:AddHearts(player:GetMaxHearts() - state.hearts) end
 
     return {
         ShowAnim = true,
@@ -160,10 +187,6 @@ function Buzzaxe:onEvalCacheDamage(player)
     player.Damage = player.Damage * Buzzaxe.const.MULT_DAMAGE[state.beast]
 end
 
-function Buzzaxe:handleInput(player)
-    if not Buzzaxe:isRampaging(player) then return end
-end
-
 --- After a rampage, maybe charge the item if it was beast mode.
 --- Then cleanup state.
 ---@param player EntityPlayer
@@ -171,16 +194,21 @@ function Buzzaxe:postRampage(player)
     if Buzzaxe:isRampaging(player) then return end
 
     local state = Buzzaxe:getState(player)
-    if not state.beast then return end
+    if not state.active then return end
+    print "Post-rampage"
 
     local slot = Buzzaxe:getSlot(player)
-    if slot ~= nil then player:FullCharge(slot, true) end
+    if slot ~= nil and state.beast then player:FullCharge(slot, true) end
 
+    state.active = false
     state.beast = false
     state.shoot = false
-    state.clock:reset()
+    state.effect:Remove()
+    state.effect = nil
+    state.clock:reset(Buzzaxe.const.CLOCK_CHARGE_TICKS)
 end
 
+---@param mod ModReference
 function Buzzaxe.init(mod)
     mod:AddCallback(ModCallbacks.MC_POST_UPDATE, Buzzaxe.chargeClock)
     mod:AddCallback(ModCallbacks.MC_PRE_USE_ITEM, Buzzaxe.onPreUseItem, Buzzaxe.ID)

@@ -1,0 +1,37 @@
+<!--
+ BL2 Krieg - TBOI: Repentance character mod (c) by Sir Wrexes
+ 
+ BL2 Krieg - TBOI: Repentance character mod is licensed under a
+ Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License.
+ 
+ You should have received a copy of the license along with this
+ work. If not, see <https://creativecommons.org/licenses/by-nc-sa/4.0/>.
+-->
+
+<entities
+    anm2root="gfx/"
+    version="5">
+    <entity
+        anm2path="effect_buzzaxe.anm2"
+        baseHP="0"
+        boss="0"
+        champion="0"
+        collisionDamage="0"
+        collisionMass="3"
+        collisionRadius="16"
+        friction="1"
+        id="0"
+        name="Buzzaxe Visuals"
+        numGridCollisionPoints="0"
+        shadowSize="0"
+        stageHP="0"
+        variant="3">
+        <gibs
+            amount="0"
+            blood="0"
+            bone="0"
+            eye="0"
+            gut="0"
+            large="0" />
+    </entity>
+</entities>

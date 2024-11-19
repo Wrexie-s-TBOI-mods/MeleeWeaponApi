@@ -8,7 +8,9 @@
  work. If not, see <https://creativecommons.org/licenses/by-nc-sa/4.0/>.
 -->
 
-<items gfxroot="gfx/items/" version="1">
+<items
+    gfxroot="gfx/items/"
+    version="1">
     <active
         id="0"
         name="Buzzaxe"
@@ -21,6 +23,5 @@
         cache="damage speed"
         cooldown="150"
         persistent="true"
-        cleareffectsonremove="true"
-    />
+        cleareffectsonremove="true" />
 </items>

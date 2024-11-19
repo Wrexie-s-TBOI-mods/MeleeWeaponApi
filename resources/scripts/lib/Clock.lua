@@ -10,9 +10,7 @@ local MAX_TICK_DEFAULT = 60
 
 ---@param maxTick? integer default: `60`
 local function Clock(maxTick)
-    if type(maxTick) ~= "number" or maxTick < 1 then
-        maxTick = MAX_TICK_DEFAULT
-    end
+    if type(maxTick) ~= "number" or maxTick < 1 then maxTick = MAX_TICK_DEFAULT end
 
     ---@class Clock
     local clock = {
@@ -20,8 +18,11 @@ local function Clock(maxTick)
         max = maxTick,
     }
 
-    function clock:reset()
+    ---@param newMax? integer
+    function clock:reset(newMax)
         self.now = 0
+        if type(newMax) ~= "number" or newMax < 1 then return end
+        self.max = newMax
     end
 
     ---@param step? integer default: `1`
