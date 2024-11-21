@@ -1,12 +1,16 @@
-local _tl_compat; if (tonumber((_VERSION or ''):match('[%d.]*$')) or 0) < 5.3 then
-    local p, m = pcall(require, 'compat53.module'); if p then _tl_compat = m end
-end; local math = _tl_compat and _tl_compat.math or math; local string = _tl_compat and _tl_compat.string or string; local table =
-    _tl_compat and _tl_compat.table or table
-local inspect = { Options = {}, }
+local _tl_compat
+if (tonumber((_VERSION or ""):match "[%d.]*$") or 0) < 5.3 then
+    local p, m = pcall(require, "compat53.module")
+    if p then _tl_compat = m end
+end
+local math = _tl_compat and _tl_compat.math or math
+local string = _tl_compat and _tl_compat.string or string
+local table = _tl_compat and _tl_compat.table or table
+local inspect = { Options = {} }
 
-inspect._VERSION = 'inspect.lua 3.1.0'
-inspect._URL = 'http://github.com/kikito/inspect.lua'
-inspect._DESCRIPTION = 'human-readable representations of tables'
+inspect._VERSION = "inspect.lua 3.1.0"
+inspect._URL = "http://github.com/kikito/inspect.lua"
+inspect._DESCRIPTION = "human-readable representations of tables"
 inspect._LICENSE = [[
   MIT LICENSE
 
@@ -31,8 +35,16 @@ inspect._LICENSE = [[
   TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
   SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ]]
-inspect.KEY = setmetatable({}, { __tostring = function() return 'inspect.KEY' end })
-inspect.METATABLE = setmetatable({}, { __tostring = function() return 'inspect.METATABLE' end })
+inspect.KEY = setmetatable({}, {
+    __tostring = function()
+        return "inspect.KEY"
+    end,
+})
+inspect.METATABLE = setmetatable({}, {
+    __tostring = function()
+        return "inspect.METATABLE"
+    end,
+})
 
 local tostring = tostring
 local rep = string.rep
@@ -45,22 +57,19 @@ local _rawget
 if rawget then
     _rawget = rawget
 else
-    _rawget = function(t, k) return t[k] end
+    _rawget = function(t, k)
+        return t[k]
+    end
 end
 
 local function rawpairs(t)
     return next, t, nil
 end
 
-
-
 local function smartQuote(str)
-    if match(str, '"') and not match(str, "'") then
-        return "'" .. str .. "'"
-    end
+    if match(str, '"') and not match(str, "'") then return "'" .. str .. "'" end
     return '"' .. gsub(str, '"', '\\"') .. '"'
 end
-
 
 local shortControlCharEscapes = {
     ["\a"] = "\\a",
@@ -82,71 +91,60 @@ for i = 0, 31 do
 end
 
 local function escape(str)
-    return (gsub(gsub(gsub(str, "\\", "\\\\"),
-            "(%c)%f[0-9]", longControlCharEscapes),
-        "%c", shortControlCharEscapes))
+    return (gsub(gsub(gsub(str, "\\", "\\\\"), "(%c)%f[0-9]", longControlCharEscapes), "%c", shortControlCharEscapes))
 end
 
 local luaKeywords = {
-    ['and'] = true,
-    ['break'] = true,
-    ['do'] = true,
-    ['else'] = true,
-    ['elseif'] = true,
-    ['end'] = true,
-    ['false'] = true,
-    ['for'] = true,
-    ['function'] = true,
-    ['goto'] = true,
-    ['if'] = true,
-    ['in'] = true,
-    ['local'] = true,
-    ['nil'] = true,
-    ['not'] = true,
-    ['or'] = true,
-    ['repeat'] = true,
-    ['return'] = true,
-    ['then'] = true,
-    ['true'] = true,
-    ['until'] = true,
-    ['while'] = true,
+    ["and"] = true,
+    ["break"] = true,
+    ["do"] = true,
+    ["else"] = true,
+    ["elseif"] = true,
+    ["end"] = true,
+    ["false"] = true,
+    ["for"] = true,
+    ["function"] = true,
+    ["goto"] = true,
+    ["if"] = true,
+    ["in"] = true,
+    ["local"] = true,
+    ["nil"] = true,
+    ["not"] = true,
+    ["or"] = true,
+    ["repeat"] = true,
+    ["return"] = true,
+    ["then"] = true,
+    ["true"] = true,
+    ["until"] = true,
+    ["while"] = true,
 }
 
 local function isIdentifier(str)
-    return type(str) == "string" and
-        not not str:match("^[_%a][_%a%d]*$") and
-        not luaKeywords[str]
+    return type(str) == "string" and not not str:match "^[_%a][_%a%d]*$" and not luaKeywords[str]
 end
 
 local flr = math.floor
 local function isSequenceKey(k, sequenceLength)
-    return type(k) == "number" and
-        flr(k) == k and
-        1 <= (k) and
-        k <= sequenceLength
+    return type(k) == "number" and flr(k) == k and 1 <= k and k <= sequenceLength
 end
 
 local defaultTypeOrders = {
-    ['number'] = 1,
-    ['boolean'] = 2,
-    ['string'] = 3,
-    ['table'] = 4,
-    ['function'] = 5,
-    ['userdata'] = 6,
-    ['thread'] = 7,
+    ["number"] = 1,
+    ["boolean"] = 2,
+    ["string"] = 3,
+    ["table"] = 4,
+    ["function"] = 5,
+    ["userdata"] = 6,
+    ["thread"] = 7,
 }
 
 local function sortKeys(a, b)
     local ta, tb = type(a), type(b)
 
-
-    if ta == tb and (ta == 'string' or ta == 'number') then
-        return (a) < (b)
-    end
+    if ta == tb and (ta == "string" or ta == "number") then return a < b end
 
     local dta = defaultTypeOrders[ta] or 100
     local dtb = defaultTypeOrders[tb] or 100
-
 
     return dta == dtb and ta < tb or dta < dtb
 end
@@ -187,7 +185,9 @@ end
 local function makePath(path, a, b)
     local newPath = {}
     local len = #path
-    for i = 1, len do newPath[i] = path[i] end
+    for i = 1, len do
+        newPath[i] = path[i]
+    end
 
     newPath[len + 1] = a
     newPath[len + 2] = b
@@ -195,11 +195,7 @@ local function makePath(path, a, b)
     return newPath
 end
 
-
-local function processRecursive(process,
-                                item,
-                                path,
-                                visited)
+local function processRecursive(process, item, path, visited)
     if item == nil then return nil end
     if visited[item] then return visited[item] end
 
@@ -217,7 +213,7 @@ local function processRecursive(process,
         end
 
         local mt = processRecursive(process, getmetatable(processed), makePath(path, inspect.METATABLE), visited)
-        if type(mt) ~= 'table' then mt = nil end
+        if type(mt) ~= "table" then mt = nil end
         setmetatable(processedCopy, mt)
         processed = processedCopy
     end
@@ -229,18 +225,7 @@ local function puts(buf, str)
     buf[buf.n] = str
 end
 
-
-
 local Inspector = {}
-
-
-
-
-
-
-
-
-
 
 local Inspector_mt = { __index = Inspector }
 
@@ -262,30 +247,29 @@ end
 function Inspector:putValue(v)
     local buf = self.buf
     local tv = type(v)
-    if tv == 'string' then
+    if tv == "string" then
         puts(buf, smartQuote(escape(v)))
-    elseif tv == 'number' or tv == 'boolean' or tv == 'nil' or
-        tv == 'cdata' or tv == 'ctype' then
+    elseif tv == "number" or tv == "boolean" or tv == "nil" or tv == "cdata" or tv == "ctype" then
         puts(buf, tostring(v))
-    elseif tv == 'table' and not self.ids[v] then
+    elseif tv == "table" and not self.ids[v] then
         local t = v
 
         if t == inspect.KEY or t == inspect.METATABLE then
             puts(buf, tostring(t))
         elseif self.level >= self.depth then
-            puts(buf, '{...}')
+            puts(buf, "{...}")
         else
-            if self.cycles[t] > 1 then puts(buf, fmt('<%d>', self:getId(t))) end
+            if self.cycles[t] > 1 then puts(buf, fmt("<%d>", self:getId(t))) end
 
             local keys, keysLen, seqLen = getKeys(t)
 
-            puts(buf, '{')
+            puts(buf, "{")
             self.level = self.level + 1
 
             for i = 1, seqLen + keysLen do
-                if i > 1 then puts(buf, ',') end
+                if i > 1 then puts(buf, ",") end
                 if i <= seqLen then
-                    puts(buf, ' ')
+                    puts(buf, " ")
                     self:putValue(t[i])
                 else
                     local k = keys[i - seqLen]
@@ -297,45 +281,43 @@ function Inspector:putValue(v)
                         self:putValue(k)
                         puts(buf, "]")
                     end
-                    puts(buf, ' = ')
+                    puts(buf, " = ")
                     self:putValue(t[k])
                 end
             end
 
             local mt = getmetatable(t)
-            if type(mt) == 'table' then
-                if seqLen + keysLen > 0 then puts(buf, ',') end
+            if type(mt) == "table" then
+                if seqLen + keysLen > 0 then puts(buf, ",") end
                 tabify(self)
-                puts(buf, '<metatable> = ')
+                puts(buf, "<metatable> = ")
                 self:putValue(mt)
             end
 
             self.level = self.level - 1
 
-            if keysLen > 0 or type(mt) == 'table' then
+            if keysLen > 0 or type(mt) == "table" then
                 tabify(self)
             elseif seqLen > 0 then
-                puts(buf, ' ')
+                puts(buf, " ")
             end
 
-            puts(buf, '}')
+            puts(buf, "}")
         end
     else
-        puts(buf, fmt('<%s %d>', tv, self:getId(v)))
+        puts(buf, fmt("<%s %d>", tv, self:getId(v)))
     end
 end
 
 function inspect.inspect(root, options)
     options = options or {}
 
-    local depth = options.depth or (math.huge)
-    local newline = options.newline or '\n'
-    local indent = options.indent or '  '
+    local depth = options.depth or math.huge
+    local newline = options.newline or "\n"
+    local indent = options.indent or "  "
     local process = options.process
 
-    if process then
-        root = processRecursive(process, root, {}, {})
-    end
+    if process then root = processRecursive(process, root, {}, {}) end
 
     local cycles = {}
     countCycles(root, cycles)
@@ -353,6 +335,39 @@ function inspect.inspect(root, options)
     inspector:putValue(root)
 
     return table.concat(inspector.buf)
+end
+
+---@param sprite Sprite
+---@param set? boolean
+---@return string offsets String formatted table that represents offsets of flags which are `set`
+function inspect.RenderFlags(sprite, set)
+    local flags = sprite:GetRenderFlags()
+    local set = set ~= nil and set or true
+    local r = {}
+
+    for offset = 0, 11 do
+        if (flags & (1 << offset) ~= 0) == set then table.insert(r, offset) end
+    end
+    return "<" .. tostring(set) .. ">" .. inspect.inspect(r)
+end
+
+---@param entity Entity
+---@param set?   boolean Default: `true`
+---@return string offsets String formatted table that represents offsets of flags which are `set`
+function inspect.EntityFlags(entity, set)
+    local flags = entity:GetEntityFlags()
+    local set = set ~= nil and set or true
+    local r = {}
+
+    for offset = 0, 59 do
+        if (flags & (1 << offset) ~= 0) == set then table.insert(r, offset) end
+    end
+    return "<" .. tostring(set) .. ">" .. inspect.inspect(r)
+end
+
+---@param entity Entity
+function inspect.EntityId(entity)
+    return tostring(entity.Type) .. "." .. tostring(entity.Variant) .. "." .. tostring(entity.SubType)
 end
 
 setmetatable(inspect, {
