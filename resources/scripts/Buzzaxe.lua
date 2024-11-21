@@ -9,7 +9,7 @@
 local Clock = include "resources.scripts.lib.Clock"
 local inspect = require "resources.scripts.lib.inspect"
 
-local Melee = include "resources.scripts.MeleeWeapon" ---@type MeleeWeaponFactory
+local Melee = include "resources.scripts.lib.MeleeWeaponApi.API"
 
 ---
 --- META DEFINITIONS
@@ -156,7 +156,7 @@ function Item:ActivateRampage(item, rng, player, flags, slot, custom)
     state.hearts = player:GetHearts()
     state.beast = state.hearts <= Item.const.RTB_THRESHOLD
     state.active = true
-    state.buzzaxe = Melee.Create { spawner = player, variant = Item.EFFECT_VARIANT }
+    state.buzzaxe = Melee.Create { Spawner = player, Variant = Item.EFFECT_VARIANT }
 
     if state.beast and player:CanPickRedHearts() then player:AddHearts(player:GetMaxHearts()) end
 

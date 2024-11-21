@@ -14,22 +14,24 @@
 ---@field RotationOffset    number          Added to any rotation
 
 ---@class MeleeWeaponCreateOptions
----@field variant   integer             Entity variant
----@field spawner   Entity              The effect's SpawnerEntity — Default: `player`
----@field subtype?  integer             Entity subtype — Default: 0
----@field posvel?   PosVel              Initial position and velocity — Default: `player`'s pos and `Vector.Zero`
----@field follow?   boolean             Follow the spawner — Default: true
----@field aim?      EntityPlayer|false  Follow this player's aim — Default: `spawner` if it's a player, `false` otherwise
+---@field Variant   integer             Entity variant
+---@field Spawner   Entity              The effect's SpawnerEntity — Default: `player`
+---@field Subtype?  integer             Entity subtype — Default: 0
+---@field PosVel?   PosVel              Initial position and velocity — Default: `player`'s pos and `Vector.Zero`
+---@field Follow?   boolean             Follow the spawner — Default: true
+---@field Aim?      EntityPlayer|false  Follow this player's aim — Default: `spawner` if it's a player, `false` otherwise
+
+---@class MeleeWeaponState
+---@field owner Entity
 
 ---@class RegistryCallback
 ---@field [1]   function    Callback function
 ---@field [2]   integer?    `AddCallback` third parameter
 
----@alias RegistryCallbackTable table<ModCallbacks, RegistryCallback>
+---@alias RegistryCallbackTable table<ModCallbacks, table<RegistryCallback>>
 
 ---@class WeaponRegistryEntry
 ---@field weapon    MeleeWeapon
+---@field options   MeleeWeaponCreateOptions
+---@field state     MeleeWeaponState
 ---@field callbacks RegistryCallbackTable
-
----@class WeaponRegistry
----@field [integer] WeaponRegistryEntry
