@@ -20,11 +20,12 @@
         collisionMass="3"
         collisionRadius="16"
         friction="1"
-        id="8"
-        name="Buzzaxe Visuals"
+        id="1000"
+        name="Buzzaxe Effect"
         numGridCollisionPoints="0"
         shadowSize="0"
-        stageHP="0">
+        stageHP="0"
+        variant="41">
         <gibs
             amount="0"
             blood="0"

@@ -9,24 +9,27 @@
 local Clock = include "resources.scripts.lib.Clock"
 local inspect = require "resources.scripts.lib.inspect"
 
+local Melee = include "resources.scripts.MeleeWeapon" ---@type MeleeWeaponFactory
+
 ---
 --- META DEFINITIONS
 ------------------------
 
----@class BuzzaxeState
+---@class ItemState
 ---@field clock         Clock           Frame counter for various time-based actions
 ---@field active        boolean         Has the weapon been activated recently ?
 ---@field beast         boolean         Is the current rampage in Beast mode ?
 ---@field hearts        integer         Red heart units at the time of activation
 ---@field shoot         boolean         During rampage, is the player holding shoot after a swing ?
 ---@field weapon        WeaponType      Player's weapon type when not rampaging
+---@field buzzaxe       MeleeWeapon     Ramapage weapon
 
-local Buzzaxe = {}
+local Item = {}
 
-Buzzaxe.ID = Isaac.GetItemIdByName "Buzzaxe"
-Buzzaxe.EFFECT = Isaac.GetEntityVariantByName "Buzzaxe Visuals"
+Item.ID = Isaac.GetItemIdByName "Buzzaxe"
+Item.EFFECT_VARIANT = Isaac.GetEntityVariantByName "Buzzaxe Effect"
 
-Buzzaxe.const = {
+Item.const = {
     --- Max number of hearts to trigger Relase The Beast.
     --- 1 unit represents half a heart.
     RTB_THRESHOLD = 2,
@@ -47,106 +50,116 @@ Buzzaxe.const = {
 
     CLOCK_ATTACK_TICKS = 60,
 
-    MAX_CHARGES = Isaac.GetItemConfig():GetCollectible(Buzzaxe.ID).MaxCharges,
+    MAX_CHARGES = Isaac.GetItemConfig():GetCollectible(Item.ID).MaxCharges,
 }
 
 --- Table index is the player index
----@type table<integer, BuzzaxeState>
-Buzzaxe.state = {}
+---@type table<integer, ItemState>
+Item.state = {}
 
 ---
 --- STATE MANAGEMENT
 ------------------------
 
 ---@param player EntityPlayer
-function Buzzaxe:getState(player)
+function Item:getState(player)
     local id = player:GetPlayerIndex()
 
     -- TODO: Maybe move this into a MC_POST_PLAYER_INIT
-    if Buzzaxe.state[id] == nil then
-        Buzzaxe.state[id] = {
-            clock = Clock(Buzzaxe.const.CLOCK_CHARGE_TICKS),
+    if Item.state[id] == nil then
+        Item.state[id] = {
+            clock = Clock(Item.const.CLOCK_CHARGE_TICKS),
             active = false,
             beast = false,
             hearts = 0,
             shoot = false,
             weapon = WeaponType.WEAPON_TEARS,
+            buzzaxe = nil,
         }
     end
 
-    return Buzzaxe.state[id]
+    return Item.state[id]
 end
 
 ---@param player EntityPlayer
-function Buzzaxe:shouldReleaseTheBeast(player)
+function Item:shouldReleaseTheBeast(player)
     local hearts = player:GetHearts() + player:GetRottenHearts()
-    return hearts <= Buzzaxe.const.RTB_THRESHOLD
+    return hearts <= Item.const.RTB_THRESHOLD
 end
 
 ---@param player EntityPlayer
 ---@return ActiveSlot?
-function Buzzaxe:getSlot(player)
+function Item:getSlot(player)
     for _, slot in pairs(ActiveSlot) do
-        if player:GetActiveItem(slot) == Buzzaxe.ID then return slot end
+        if player:GetActiveItem(slot) == Item.ID then return slot end
     end
 end
 
 ---@param player EntityPlayer
-function Buzzaxe:isHoldingBuzzaxe(player)
-    return Buzzaxe:getSlot(player) ~= -1
+function Item:isHoldingBuzzaxe(player)
+    return Item:getSlot(player) ~= -1
 end
 
 ---@param player EntityPlayer
-function Buzzaxe:isRampaging(player)
-    return player:GetEffects():HasCollectibleEffect(Buzzaxe.ID)
+function Item:isRampaging(player)
+    return player:GetEffects():HasCollectibleEffect(Item.ID)
 end
 
 ---
---- MOD CALLBACKS
+--- WEAPON MANIPULATION
 ------------------------
 
-function Buzzaxe:chargeClock()
-    local game = Game()
-    for i = 0, game:GetNumPlayers() do
-        local player = game:GetPlayer(i)
-        if player:HasCollectible(Buzzaxe.ID) and not Buzzaxe:isRampaging(player) then
-            ---@type ActiveSlot
-            ---@diagnostic disable-next-line: assign-type-mismatch Presence of the item is checked above, slot cannot be nil
-            local slot = Buzzaxe:getSlot(player)
-            local charge = player:GetActiveCharge(slot)
-            local clock = Buzzaxe:getState(player).clock
-            if charge < Buzzaxe.const.MAX_CHARGES and clock:tick() ~= 0 then
-                player:AddActiveCharge(1, slot, charge >= Buzzaxe.const.MAX_CHARGES - 4, false, true)
-            end
-        end
+---@param player EntityPlayer
+---@param state? ItemState
+function Item:destroyWeapon(player, state)
+    local weapon = player:GetWeapon(1)
+
+    if weapon then
+        local state = state or Item:getState(player)
+        state.weapon = weapon:GetWeaponType()
+        Isaac.DestroyWeapon(weapon)
     end
 end
 
----@param item CollectibleType
----@param rng RNG
 ---@param player EntityPlayer
----@param flags integer
----@param slot ActiveSlot
----@param custom integer
-function Buzzaxe:onUseItem(item, rng, player, flags, slot, custom)
+---@param state? ItemState
+function Item:restoreWeapon(player, state)
+    local state = state or Item:getState(player)
+    local weapon = Isaac.CreateWeapon(state.weapon, player)
+
+    player:SetWeapon(weapon, 1)
+end
+
+function Item:RemoveWeaponOnPlayerUpdate(player)
+    if not Item:isRampaging(player) then return end
+    Item:destroyWeapon(player)
+end
+
+---
+--- ITEM ACTIVATION
+------------------------
+
+---@param item      CollectibleType
+---@param rng       RNG
+---@param player    EntityPlayer
+---@param flags     integer
+---@param slot      ActiveSlot
+---@param custom    integer
+function Item:ActivateRampage(item, rng, player, flags, slot, custom)
     if (flags & UseFlag.USE_CARBATTERY) == UseFlag.USE_CARBATTERY then return end
     print "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"
     print "[Buzzaxe#onUse] start"
 
-    local state = Buzzaxe:getState(player)
-    local weapon = player:GetWeapon(1)
+    local state = Item:getState(player)
+    Item:destroyWeapon(player, state)
 
     state.hearts = player:GetHearts()
-    state.beast = state.hearts <= Buzzaxe.const.RTB_THRESHOLD
+    state.beast = state.hearts <= Item.const.RTB_THRESHOLD
     state.active = true
+    state.buzzaxe = Melee.Create { spawner = player, variant = Item.EFFECT_VARIANT }
 
-    if state.beast and player:CanPickRedHearts() then player:AddHearts(player:GetMaxHearts() - state.hearts) end
-    if weapon then
-        state.weapon = weapon:GetWeaponType()
-        Isaac.DestroyWeapon(weapon)
-    end
+    if state.beast and player:CanPickRedHearts() then player:AddHearts(player:GetMaxHearts()) end
 
-    print "[Buzzaxe#onUse] done"
     return {
         ShowAnim = true,
         Remove = false,
@@ -154,54 +167,83 @@ function Buzzaxe:onUseItem(item, rng, player, flags, slot, custom)
     }
 end
 
---- Apply speed multiplier during rampage
----@param player EntityPlayer
-function Buzzaxe:onEvalCacheSpeed(player)
-    if not Buzzaxe:isRampaging(player) then return end
-
-    local speed = player.MoveSpeed * Buzzaxe.const.MULT_SPEED
-    player.MoveSpeed = math.min(speed, Buzzaxe.const.MAX_SPEED)
-end
-
---- Apply damage multiplier during rampage
----@param player EntityPlayer
-function Buzzaxe:onEvalCacheDamage(player)
-    if not Buzzaxe:isRampaging(player) then return end
-
-    local state = Buzzaxe:getState(player)
-    player.Damage = player.Damage * Buzzaxe.const.MULT_DAMAGE[state.beast]
-end
-
 --- After a rampage, maybe charge the item if it was beast mode.
 --- Then cleanup state.
 ---@param player EntityPlayer
-function Buzzaxe:postRampage(player)
-    if Buzzaxe:isRampaging(player) then return end
+function Item:CleanupState(player)
+    if Item:isRampaging(player) then return end
 
-    local state = Buzzaxe:getState(player)
+    local state = Item:getState(player)
     if not state.active then return end
     print "[Buzzaxe#postRampage] start"
 
-    local slot = Buzzaxe:getSlot(player)
+    local slot = Item:getSlot(player)
     if slot ~= nil and state.beast then player:FullCharge(slot, true) end
 
     state.active = false
     state.beast = false
     state.shoot = false
-    state.clock:reset(Buzzaxe.const.CLOCK_CHARGE_TICKS)
+    state.clock:reset(Item.const.CLOCK_CHARGE_TICKS)
+    state.buzzaxe = state.buzzaxe:Remove()
 
-    local weapon = Isaac.CreateWeapon(state.weapon, player)
-    player:SetWeapon(weapon, 1)
+    Item:restoreWeapon(player, state)
     print "[Buzzaxe#postRampage] done"
 end
 
----@param mod ModReference
-function Buzzaxe.init(mod)
-    mod:AddCallback(ModCallbacks.MC_POST_UPDATE, Buzzaxe.chargeClock)
-    mod:AddCallback(ModCallbacks.MC_USE_ITEM, Buzzaxe.onUseItem, Buzzaxe.ID)
-    mod:AddCallback(ModCallbacks.MC_POST_PLAYER_UPDATE, Buzzaxe.postRampage, PlayerVariant.PLAYER)
-    mod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, Buzzaxe.onEvalCacheDamage, CacheFlag.CACHE_DAMAGE)
-    mod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, Buzzaxe.onEvalCacheSpeed, CacheFlag.CACHE_SPEED)
+---
+--- PASSIVE UPDATING
+------------------------
+
+function Item:chargeClock()
+    local game = Game()
+    for i = 0, game:GetNumPlayers() do
+        local player = game:GetPlayer(i)
+        if player:HasCollectible(Item.ID) and not Item:isRampaging(player) then
+            ---@type ActiveSlot
+            ---@diagnostic disable-next-line: assign-type-mismatch Presence of the item is checked above, slot cannot be nil
+            local slot = Item:getSlot(player)
+            local charge = player:GetActiveCharge(slot)
+            local clock = Item:getState(player).clock
+            if charge < Item.const.MAX_CHARGES and clock:tick() ~= 0 then
+                player:AddActiveCharge(1, slot, charge >= Item.const.MAX_CHARGES - 4, false, true)
+            end
+        end
+    end
 end
 
-return Buzzaxe
+---
+--- CACHE MANIPULATION
+------------------------
+
+--- Apply speed multiplier during rampage
+---@param player EntityPlayer
+function Item:onEvalCacheSpeed(player)
+    if not Item:isRampaging(player) then return end
+
+    local speed = player.MoveSpeed * Item.const.MULT_SPEED
+    player.MoveSpeed = math.min(speed, Item.const.MAX_SPEED)
+end
+
+---
+--- INIT
+------------------------
+
+---@param mod ModReference
+function Item.init(mod)
+    -- RAMPAGE
+    mod:AddCallback(ModCallbacks.MC_USE_ITEM, Item.ActivateRampage, Item.ID)
+    mod:AddCallback(ModCallbacks.MC_POST_PLAYER_UPDATE, Item.CleanupState, PlayerVariant.PLAYER)
+
+    -- PASSIVE UPDATING
+    mod:AddCallback(ModCallbacks.MC_POST_UPDATE, Item.chargeClock)
+
+    -- CACHE MANIPULATION
+    mod:AddPriorityCallback(
+        ModCallbacks.MC_EVALUATE_CACHE,
+        CallbackPriority.LATE,
+        Item.onEvalCacheSpeed,
+        CacheFlag.CACHE_SPEED
+    )
+end
+
+return Item
