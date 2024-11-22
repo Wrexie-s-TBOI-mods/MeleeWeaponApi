@@ -24,9 +24,11 @@
 ---@class MeleeWeaponState
 ---@field owner Entity
 
+---@alias CallbackFn fun(ModReference, ...)
+
 ---@class RegistryCallback
----@field [1]   function    Callback function
----@field [2]   integer?    `AddCallback` third parameter
+---@field [1] CallbackFn    Callback function
+---@field [2] integer?      `AddCallback` third parameter
 
 ---@alias RegistryCallbackTable table<ModCallbacks, table<RegistryCallback>>
 
@@ -35,3 +37,5 @@
 ---@field options   MeleeWeaponCreateOptions
 ---@field state     MeleeWeaponState
 ---@field callbacks RegistryCallbackTable
+
+---@class MeleeWeaponApiModReference : ModReference

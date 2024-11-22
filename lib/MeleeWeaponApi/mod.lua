@@ -6,4 +6,6 @@
 -- You should have received a copy of the license along with this
 -- work. If not, see <https://creativecommons.org/licenses/by-nc-sa/4.0/>.
 
-return include "scripts.lib.MeleeWeaponApi.API"
+local mod = RegisterMod("!!Melee Weapon API", 1) ---@type MeleeWeaponApiModReference
+
+return mod

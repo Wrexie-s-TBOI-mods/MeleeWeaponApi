@@ -6,12 +6,14 @@
 -- You should have received a copy of the license along with this
 -- work. If not, see <https://creativecommons.org/licenses/by-nc-sa/4.0/>.
 
-local Registry = include "resources.scripts.lib.MeleeWeaponApi.Registry"
+local mod = require "lib.MeleeWeaponApi.mod" ---@class MeleeWeaponApiModReference
+
+local Registry = include "lib.MeleeWeaponApi.RegistryManager"
 
 ---@class MeleeWeapon
-local Meta = {}
+local MeleeWeapon = mod.__MeleeWeapon or {}
 
-function Meta:Remove()
+function MeleeWeapon:Remove()
     self.Sprite:Stop(true)
     self.Effect:Remove()
 
@@ -20,10 +22,11 @@ function Meta:Remove()
 end
 
 ---@param angle Vector|number
-function Meta:Rotate(angle)
+function MeleeWeapon:Rotate(angle)
     local r = type(angle) == "number" and angle or angle:GetAngleDegrees()
     self.Effect.Rotation = self.RotationOffset + r
     self.Sprite.Rotation = self.RotationOffset + r
 end
 
-return Meta
+mod.__MeleeWeapon = MeleeWeapon
+return mod.__MeleeWeapon

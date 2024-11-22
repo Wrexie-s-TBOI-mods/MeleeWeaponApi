@@ -6,18 +6,20 @@
 -- You should have received a copy of the license along with this
 -- work. If not, see <https://creativecommons.org/licenses/by-nc-sa/4.0/>.
 
-local inspect = include "resources.scripts.lib.inspect"
+local inspect = include "lib.inspect"
 
-local Callback = include "resources.scripts.lib.MeleeWeaponApi.CallbackManager"
-local MeleeWeapon = include "resources.scripts.lib.MeleeWeaponApi.MeleeWeapon"
-local Registry = include "resources.scripts.lib.MeleeWeaponApi.Registry"
+local mod = require "lib.MeleeWeaponApi.mod" ---@class MeleeWeaponApiModReference
+
+local Callback = include "lib.MeleeWeaponApi.CallbackManager"
+local MeleeWeapon = include "lib.MeleeWeaponApi.MeleeWeapon"
+local Registry = include "lib.MeleeWeaponApi.RegistryManager"
 
 local ENTITY_TYPE = EntityType.ENTITY_EFFECT
 
 ---@class MeleeWeaponApi
-local Api = {
-    Callbacks = include "resources.scripts.lib.MeleeWeaponApi.Callback",
-}
+local Api = mod.__Api or {}
+
+Api.Callbacks = include "lib.MeleeWeaponApi.Callbacks"
 
 ---@param o MeleeWeaponCreateOptions
 local function initOptions(o)
@@ -68,10 +70,5 @@ function Api.Create(options)
     return weapon
 end
 
-return setmetatable({}, {
-    __index = Api,
-    __newindex = function()
-        error "Trying to edit MeleeWeaponApi table."
-    end,
-    __metatable = false,
-})
+mod.__Api = Api
+return mod.__Api
