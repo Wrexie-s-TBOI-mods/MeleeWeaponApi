@@ -22,7 +22,7 @@ local Melee = include "lib.MeleeWeaponApi.API"
 ---@field hearts        integer         Red heart units at the time of activation
 ---@field shoot         boolean         During rampage, is the player holding shoot after a swing ?
 ---@field weapon        WeaponType      Player's weapon type when not rampaging
----@field buzzaxe       MeleeWeapon     Ramapage weapon
+---@field buzzaxe       EntityMelee     Ramapage weapon
 
 local Item = {}
 
@@ -154,9 +154,16 @@ function Item:ActivateRampage(item, rng, player, flags, slot, custom)
     Item:destroyWeapon(player, state)
 
     state.hearts = player:GetHearts()
-    state.beast = state.hearts <= Item.const.RTB_THRESHOLD
+    -- state.beast = state.hearts <= Item.const.RTB_THRESHOLD
+    state.beast = true
     state.active = true
-    state.buzzaxe = Melee.Create { Spawner = player, Variant = Item.EFFECT_VARIANT }
+
+    local axe = Melee.Create { Spawner = player, Variant = Item.EFFECT_VARIANT }
+    axe.DepthOffset = player.DepthOffset + 1
+    axe.AimRotationOffset = -90
+    axe:RotateWithAim(player)
+    axe:RotateWithMovement(player)
+    state.buzzaxe = axe
 
     if state.beast and player:CanPickRedHearts() then player:AddHearts(player:GetMaxHearts()) end
 
@@ -199,9 +206,8 @@ function Item:chargeClock()
     for i = 0, game:GetNumPlayers() do
         local player = game:GetPlayer(i)
         if player:HasCollectible(Item.ID) and not Item:isRampaging(player) then
-            ---@type ActiveSlot
             ---@diagnostic disable-next-line: assign-type-mismatch Presence of the item is checked above, slot cannot be nil
-            local slot = Item:getSlot(player)
+            local slot = Item:getSlot(player) ---@type ActiveSlot
             local charge = player:GetActiveCharge(slot)
             local clock = Item:getState(player).clock
             if charge < Item.const.MAX_CHARGES and clock:tick() ~= 0 then
@@ -230,20 +236,23 @@ end
 
 ---@param mod ModReference
 function Item.init(mod)
-    -- RAMPAGE
+    --#region RAMPAGE
     mod:AddCallback(ModCallbacks.MC_USE_ITEM, Item.ActivateRampage, Item.ID)
     mod:AddCallback(ModCallbacks.MC_POST_PLAYER_UPDATE, Item.CleanupState, PlayerVariant.PLAYER)
+    --#endregion
 
-    -- PASSIVE UPDATING
+    --#region PASSIVE UPDATE
     mod:AddCallback(ModCallbacks.MC_POST_UPDATE, Item.chargeClock)
+    --#endregion
 
-    -- CACHE MANIPULATION
+    --#region CACHE MANIPULATION
     mod:AddPriorityCallback(
         ModCallbacks.MC_EVALUATE_CACHE,
         CallbackPriority.LATE,
         Item.onEvalCacheSpeed,
         CacheFlag.CACHE_SPEED
     )
+    --#endregion
 end
 
 return Item

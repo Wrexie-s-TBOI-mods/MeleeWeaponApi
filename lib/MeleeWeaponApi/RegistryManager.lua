@@ -8,22 +8,21 @@
 
 local mod = require "lib.MeleeWeaponApi.mod" ---@class MeleeWeaponApiModReference
 
+local Util = include "lib.MeleeWeaponApi.Util"
 local Registry = include "lib.MeleeWeaponApi.Registry"
 
 ---TODO: Garbage collection on run end
 ---@class WeaponRegistryManager
 local RegistryManager = mod.__RegistryManager or {}
 
----@param weapon MeleeWeapon
----@param options MeleeWeaponCreateOptions
-function RegistryManager.Add(weapon, options)
+---@param weapon    EntityMelee
+---@param props     MeleeWeaponProps
+---@param state     MeleeWeaponState
+function RegistryManager.Add(weapon, props, state)
     ---@type WeaponRegistryEntry
     local reg = {
-        weapon = weapon,
-        options = options,
-        state = {
-            owner = options.Spawner,
-        },
+        props = Util.CloneTable(props),
+        state = Util.CloneTable(state),
         callbacks = setmetatable({}, {
             __index = function(self, key)
                 if not rawget(self, key) then self[key] = {} end
@@ -35,7 +34,11 @@ function RegistryManager.Add(weapon, options)
     Registry[weapon] = reg
 end
 
----@param weapon    MeleeWeapon
+function RegistryManager.Has(weapon)
+    return Registry[weapon] ~= nil
+end
+
+---@param weapon    EntityMelee
 ---@param table     RegistryCallbackTable
 function RegistryManager.AddCallbacks(weapon, table)
     local entry = Registry[weapon]
@@ -52,18 +55,28 @@ function RegistryManager.AddCallbacks(weapon, table)
     end
 end
 
----@param weapon MeleeWeapon
+---@param weapon EntityMelee
 function RegistryManager.GetState(weapon)
-    return Registry[weapon].state
+    local entry = Registry[weapon]
+    local exists = entry ~= nil
+
+    return exists and entry.state or nil
+end
+
+---@param weapon EntityMelee
+function RegistryManager.GetProps(weapon)
+    local entry = Registry[weapon]
+    local exists = entry ~= nil
+
+    return exists and entry.props or nil
 end
 
 function RegistryManager.Size()
-    return Registry.size
+    return #Registry
 end
 
 function RegistryManager.Remove(weapon)
-    local entry = Registry[weapon]
-    if not entry then return end
+    local entry = assert(Registry[weapon], "Trying to remove a non existent entry")
 
     for key, cb in pairs(entry.callbacks) do
         mod:RemoveCallback(key, cb[1])

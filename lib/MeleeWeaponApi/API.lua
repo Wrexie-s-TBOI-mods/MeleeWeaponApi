@@ -10,9 +10,8 @@ local inspect = include "lib.inspect"
 
 local mod = require "lib.MeleeWeaponApi.mod" ---@class MeleeWeaponApiModReference
 
-local Callback = include "lib.MeleeWeaponApi.CallbackManager"
-local MeleeWeapon = include "lib.MeleeWeaponApi.MeleeWeapon"
-local Registry = include "lib.MeleeWeaponApi.RegistryManager"
+local EntityMelee = include "lib.MeleeWeaponApi.EntityMelee"
+local Util = include "lib.MeleeWeaponApi.Util"
 
 local ENTITY_TYPE = EntityType.ENTITY_EFFECT
 
@@ -28,7 +27,6 @@ local function initOptions(o)
     o.PosVel.Position = o.PosVel.Position or o.Spawner:GetPosVel().Position
     o.PosVel.Velocity = o.PosVel.Velocity or Vector.Zero
     o.Follow = o.Follow == nil or o.Follow
-    o.Aim = o.Aim == nil and o.Spawner:ToPlayer() or o.Aim or false
     return o
 end
 
@@ -36,12 +34,9 @@ end
 function Api.ValidateOptions() end
 
 ---@param options MeleeWeaponCreateOptions
+---@return EntityMelee
 function Api.Create(options)
     options = initOptions(options)
-
-    local weapon = {
-        RotationOffset = 0,
-    }
 
     local entity = Isaac.Spawn(
         ENTITY_TYPE,
@@ -52,19 +47,10 @@ function Api.Create(options)
         options.Spawner
     )
 
-    weapon.Effect =
-        assert(entity:ToEffect(), "Couldn't convert Entity #" .. inspect.EntityId(entity) .. " into EntityEffect")
-    weapon.Sprite = weapon.Effect:GetSprite()
+    local effect = Util.MustBeEffect(entity)
+    local weapon = EntityMelee.FromEffect(effect)
 
-    if options.Follow then weapon.Effect:FollowParent(options.Spawner) end
-
-    weapon = setmetatable(weapon, {
-        __index = MeleeWeapon,
-        __metatable = false,
-    })
-
-    Registry.Add(weapon, options)
-    Callback.RegisterDefaults(weapon)
+    if options.Follow then weapon:FollowParent(options.Spawner) end
 
     Isaac.RunCallback(Api.Callbacks.MC_POST_WEAPON_INIT, weapon)
     return weapon

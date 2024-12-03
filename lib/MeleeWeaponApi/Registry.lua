@@ -6,30 +6,43 @@
 -- You should have received a copy of the license along with this
 -- work. If not, see <https://creativecommons.org/licenses/by-nc-sa/4.0/>.
 
+local inspect = require "lib.inspect"
 local mod = require "lib.MeleeWeaponapi.mod" ---@class MeleeWeaponApiModReference
 
 ---@class WeaponRegistry
----@field [MeleeWeapon] WeaponRegistryEntry
-local Registry = mod.__Registry
-    or setmetatable({
-        size = 0,
-    }, {
-        __index = function(self, weapon)
-            return rawget(self, GetPtrHash(weapon.Effect))
-        end,
-        __newindex = function(self, weapon, value)
-            rawset(self, GetPtrHash(weapon.Effect), value)
-            if value == nil then
-                self.size = math.max(0, self.size - 1)
-            else
-                self.size = self.size + 1
-            end
-        end,
-        __len = function(self)
-            return self.size
-        end,
-        __metatable = false,
-    })
+---@field [EntityMelee] WeaponRegistryEntry
+local Registry = mod.__Registry or {
+    size = 0,
+}
 
-mod.__Registry = Registry
+---@type metatable
+local Meta = {}
+
+---@param table WeaponRegistry
+---@param weapon EntityMelee
+function Meta.__index(table, weapon)
+    local hash = GetPtrHash(weapon)
+
+    return table[hash]
+end
+
+---@param table WeaponRegistry
+---@param weapon EntityMelee
+---@param value WeaponRegistryEntry
+function Meta.__newindex(table, weapon, value)
+    local hash = GetPtrHash(weapon)
+
+    rawset(table, hash, value)
+    if value == nil then
+        table.size = math.max(0, table.size - 1)
+    else
+        table.size = table.size + 1
+    end
+end
+
+function Meta.__len(table)
+    return table.size
+end
+
+mod.__Registry = setmetatable(Registry, Meta)
 return mod.__Registry

@@ -10,6 +10,7 @@ local mod = require "lib.MeleeWeaponApi.mod" ---@class MeleeWeaponApiModReferenc
 
 local CB = include "lib.MeleeWeaponApi.Callbacks"
 local Registry = include "lib.MeleeWeaponApi.RegistryManager"
+local Util = include "lib.MeleeWeaponApi.Util"
 
 ---@class MeleeWeaponCallbackManager
 local CallbackManager = mod.__CallbackManager or {}
@@ -43,27 +44,51 @@ local function Callbacks(table)
     })
 end
 
----@param weapon MeleeWeapon
+---@param weapon EntityMelee
 function CallbackManager.RegisterDefaults(weapon)
+    local state = Registry.GetState(weapon) ---@cast state -nil
+    local props = Registry.GetProps(weapon) ---@cast props -nil
+
     local function thisWeapon(effect)
-        return GetPtrHash(effect) == GetPtrHash(weapon.Effect)
+        return GetPtrHash(effect) == GetPtrHash(weapon)
     end
 
     local defaults = {
+        [ModCallbacks.MC_POST_PLAYER_UPDATE] = Callbacks {
+            { ---RotateWithAim
+                ---@param _ ModReference
+                ---@param player EntityPlayer
+                function(_, player)
+                    if not state.AimRotationSource or GetPtrHash(state.AimRotationSource) ~= GetPtrHash(player) then
+                        return
+                    end
+
+                    local aiming, direction = Util.IsAiming(player)
+                    if not aiming then return end
+
+                    local angle = direction:GetAngleDegrees()
+                    weapon.Rotation = angle + props.AimRotationOffset
+                    weapon:GetSprite().Rotation = angle + props.AimRotationOffset
+                end,
+            },
+            -- { ---RotateWithMovement
+
+            -- },
+        },
         [ModCallbacks.MC_POST_EFFECT_UPDATE] = Callbacks {
-            {
+            { ---Trigger MC_POST_WEAPON_UPDATE
                 function(_, effect)
                     if thisWeapon(effect) then Isaac.RunCallback(CB.MC_POST_WEAPON_UPDATE, weapon) end
                 end,
-                weapon.Effect.Variant,
+                weapon.Variant,
             },
         },
         [ModCallbacks.MC_POST_EFFECT_RENDER] = Callbacks {
-            {
+            { ---Trigger MC_POST_WEAPON_RENDER
                 function(_, effect, offset)
                     if thisWeapon(effect) then Isaac.RunCallback(CB.MC_POST_WEAPON_RENDER, weapon, offset) end
                 end,
-                weapon.Effect.Variant,
+                weapon.Variant,
             },
         },
     }

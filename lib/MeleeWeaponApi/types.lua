@@ -8,10 +8,7 @@
 
 ---@meta
 
----@class MeleeWeapon
----@field Effect            EntityEffect
----@field Sprite            Sprite
----@field RotationOffset    number          Added to any rotation
+---@class EntityMelee : EntityEffect, MeleeWeaponProps
 
 ---@class MeleeWeaponCreateOptions
 ---@field Variant   integer             Entity variant
@@ -19,10 +16,6 @@
 ---@field Subtype?  integer             Entity subtype — Default: 0
 ---@field PosVel?   PosVel              Initial position and velocity — Default: `player`'s pos and `Vector.Zero`
 ---@field Follow?   boolean             Follow the spawner — Default: true
----@field Aim?      EntityPlayer|false  Follow this player's aim — Default: `spawner` if it's a player, `false` otherwise
-
----@class MeleeWeaponState
----@field owner Entity
 
 ---@alias CallbackFn fun(ModReference, ...)
 
@@ -33,8 +26,7 @@
 ---@alias RegistryCallbackTable table<ModCallbacks, table<RegistryCallback>>
 
 ---@class WeaponRegistryEntry
----@field weapon    MeleeWeapon
----@field options   MeleeWeaponCreateOptions
+---@field props     MeleeWeaponProps
 ---@field state     MeleeWeaponState
 ---@field callbacks RegistryCallbackTable
 

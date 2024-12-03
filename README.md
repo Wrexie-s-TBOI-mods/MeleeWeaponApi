@@ -88,6 +88,8 @@ Starts with **Buzzaxe** as pocket active item.
 
 ### TODOS
 
+#### Krieg/Buzzaxe
+
 - [x] Charge method
   - [x] Time
   - [x] Prevent room clear charge
@@ -119,6 +121,12 @@ Starts with **Buzzaxe** as pocket active item.
     - [ ] Weapon sprite
     - [ ] Release the Beast transformation
   - [ ] Krieg
+
+### Melee Weapon API
+
+- [x] Find a way to make modules peristent through `include`s
+- [x] Make `EntityWeapon` a subclass of `EntityEffect`
+- [ ] Lock metatables ?
 
 ---
 
