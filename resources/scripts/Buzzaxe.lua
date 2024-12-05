@@ -46,7 +46,7 @@ Item.const = {
 
     MAX_SPEED = 2,
 
-    CLOCK_CHARGE_TICKS = 60,
+    CLOCK_ACTIVE_CHARGE_TICKS = 60,
 
     CLOCK_ATTACK_TICKS = 60,
 
@@ -68,7 +68,7 @@ function Item:getState(player)
     -- TODO: Maybe move this into a MC_POST_PLAYER_INIT
     if Item.state[id] == nil then
         Item.state[id] = {
-            clock = Clock(Item.const.CLOCK_CHARGE_TICKS),
+            clock = Clock(Item.const.CLOCK_ACTIVE_CHARGE_TICKS),
             active = false,
             beast = false,
             hearts = 0,
@@ -160,9 +160,7 @@ function Item:ActivateRampage(item, rng, player, flags, slot, custom)
 
     local axe = Melee.Create { Spawner = player, Variant = Item.EFFECT_VARIANT }
     axe.DepthOffset = player.DepthOffset + 1
-    axe.AimRotationOffset = -90
-    axe:RotateWithAim(player)
-    axe:RotateWithMovement(player)
+    axe:StartCharging()
     state.buzzaxe = axe
 
     if state.beast and player:CanPickRedHearts() then player:AddHearts(player:GetMaxHearts()) end
@@ -190,7 +188,7 @@ function Item:CleanupState(player)
     state.active = false
     state.beast = false
     state.shoot = false
-    state.clock:reset(Item.const.CLOCK_CHARGE_TICKS)
+    state.clock:reset(Item.const.CLOCK_ACTIVE_CHARGE_TICKS)
     state.buzzaxe = state.buzzaxe:Remove()
 
     Item:restoreWeapon(player, state)
@@ -236,23 +234,34 @@ end
 
 ---@param mod ModReference
 function Item.init(mod)
-    --#region RAMPAGE
+    --[[ Rampage ]]
     mod:AddCallback(ModCallbacks.MC_USE_ITEM, Item.ActivateRampage, Item.ID)
     mod:AddCallback(ModCallbacks.MC_POST_PLAYER_UPDATE, Item.CleanupState, PlayerVariant.PLAYER)
-    --#endregion
+    --]]
 
-    --#region PASSIVE UPDATE
+    --[[ WEAPON BEHAVIOUR ]]
+    mod:AddCallback(Melee.Callbacks.MC_PRE_WEAPON_SWING, function(_, weapon)
+        -- Prevent overlapping swings
+        return weapon:IsSwinging()
+    end)
+
+    mod:AddCallback(Melee.Callbacks.MC_POST_WEAPON_SWING, function(_, weapon)
+        weapon:Swing(Direction.DOWN)
+    end)
+    --]]
+
+    --[[ PASSIVE UPDATE ]]
     mod:AddCallback(ModCallbacks.MC_POST_UPDATE, Item.chargeClock)
-    --#endregion
+    --]]
 
-    --#region CACHE MANIPULATION
+    --[[ CACHE MANIPULATION ]]
     mod:AddPriorityCallback(
         ModCallbacks.MC_EVALUATE_CACHE,
         CallbackPriority.LATE,
         Item.onEvalCacheSpeed,
         CacheFlag.CACHE_SPEED
     )
-    --#endregion
+    --]]
 end
 
 return Item

@@ -54,10 +54,70 @@ function Util.MustBeEffect(entity)
 end
 
 ---@param player EntityPlayer
-function Util.IsAiming(player)
+function Util.IsPlayerAiming(player)
     local p = Util.MustBePlayer(player)
     local v = p:GetAimDirection()
-    return (v.X ~= 0 or v.Y ~= 0), v
+
+    return (v.X ~= 0 or v.Y ~= 0), {
+        vector = v,
+        head = p:GetHeadDirection(),
+    }
+end
+
+---@param player EntityPlayer
+function Util.IsPlayerMoving(player)
+    local p = Util.MustBePlayer(player)
+    local v = p:GetMovementVector()
+
+    return (v.X ~= 0 or v.Y ~= 0),
+        {
+            vector = v,
+            direction = p:GetMovementDirection(),
+            head = p:GetHeadDirection(),
+        }
+end
+
+--[[
+    Perform a Switch/Case-like selection.  
+    `value` is used to index `cases`.  
+    When `value` is `nil`, returns `default`.  
+]]
+---@generic In, Out, Default
+---@param value?    `In`
+---@param cases     table<In, `Out`>
+---@param default?  `Default`
+---@return Out|Default
+---@todo Find if there's a magical way to type this properly
+function Util.When(value, cases, default)
+    if value == nil then return default end
+    return cases[value]
+end
+
+---@param direction Direction
+---@return 0|90|180|-90
+function Util.DirectionToAngleDegrees(direction)
+    return Util.When(direction, {
+        [Direction.LEFT] = 180,
+        [Direction.RIGHT] = 0,
+        [Direction.UP] = -90,
+        [Direction.DOWN] = 90,
+        [Direction.NO_DIRECTION] = 90,
+    })
+end
+
+---@param direction Direction
+---@return Vector
+function Util.DirectionToAngleVector(direction)
+    return Vector.FromAngle(Util.DirectionToAngleDegrees(direction))
+end
+
+---@param input unknown
+---@param class userdata|function|table
+function Util.InstanceOfIsaacApiClass(input, class)
+    local mtInput = getmetatable(input)
+    local mtClass = getmetatable(type(class) == "function" and class() or class)
+
+    return mtInput.__class == mtClass.__class
 end
 
 mod.__Util = Util

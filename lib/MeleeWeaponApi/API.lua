@@ -52,6 +52,9 @@ function Api.Create(options)
 
     if options.Follow then weapon:FollowParent(options.Spawner) end
 
+    local sprite = weapon:GetSprite()
+    sprite.Rotation = Util.DirectionToAngleDegrees(Direction.NO_DIRECTION)
+
     Isaac.RunCallback(Api.Callbacks.MC_POST_WEAPON_INIT, weapon)
     return weapon
 end

@@ -7,16 +7,18 @@
 -- work. If not, see <https://creativecommons.org/licenses/by-nc-sa/4.0/>.
 
 local inspect = require "lib.inspect"
+
 local mod = require "lib.MeleeWeaponApi.mod" ---@class MeleeWeaponApiModReference
 
-local Callback = include "lib.MeleeWeaponApi.CallbackManager"
-local Registry = include "lib.MeleeWeaponApi.RegistryManager"
 local Util = include "lib.MeleeWeaponApi.Util"
+local CallbackManager = include "lib.MeleeWeaponApi.CallbackManager"
+local RegistryManager = include "lib.MeleeWeaponApi.RegistryManager"
+local Callback = include "lib.MeleeWeaponApi.Callbacks"
 
 ---@class EntityMelee
 local EntityMelee = mod.__EntityMelee or {}
 
---#region Metatable shenanigans
+--[[ Metatable shenanigans ]]
 
 local Super = getmetatable(EntityEffect).__class
 if not EntityMelee.__fxindex then
@@ -25,7 +27,7 @@ if not EntityMelee.__fxindex then
 end
 
 rawset(Super, "__index", function(self, key)
-    local props = Registry.GetProps(self)
+    local props = RegistryManager.GetProps(self)
     if props then
         if EntityMelee[key] then return EntityMelee[key] end
         if props[key] then return props[key] end
@@ -35,7 +37,7 @@ rawset(Super, "__index", function(self, key)
 end)
 
 rawset(Super, "__newindex", function(self, key, value)
-    local props = Registry.GetProps(self)
+    local props = RegistryManager.GetProps(self)
 
     if props and props[key] then
         props[key] = value
@@ -53,53 +55,156 @@ function EntityMelee:__fxcall(name, ...)
     return fn(self, ...)
 end
 
---#endregion Metatable shenanigans
+--]]
 
---#region Defaults
+--[[ Defaults ]]
 
----@class MeleeWeaponProps
-local INITIAL_PROPS = {
-    AimRotationOffset = 0,
-    MovementRotationOffset = 0,
-}
+---@param weapon EntityMelee
+local function INITIAL_PROPS(weapon)
+    ---@class MeleeWeaponProps
+    local props = {
+        AimRotationOffset = 0,
+        MovementRotationOffset = 0,
 
----@class MeleeWeaponState
-local INITIAL_STATE = {
-    AimRotationSource = nil, ---@type EntityPlayer?
-    MovementRotationSource = nil, ---@type EntityPlayer?
-}
+        ChargePercentage = 0,
+        ChargebarSprite = "gfx/chargebar.anm2",
+        GetChargebarPosition = function()
+            return weapon.SpawnerEntity:GetPosVel().Position
+        end,
+    }
 
---#endregion Defaults
+    return props
+end
 
---#region Class methods
+local function INITIAL_STATE(_weapon)
+    ---@class MeleeWeaponState
+    local state = {
+        CurrentAnimation = nil, ---@type string?
+
+        IsSwinging = false,
+        IsCharging = false,
+        IsThrowing = false,
+
+        Chargebar = nil, ---@type Sprite
+
+        IsRotating = false,
+        RotateFrom = Vector(0, 0),
+        RotateTo = Vector(0, 0),
+        RotateProgress = 0.0,
+
+        AimRotationSource = nil, ---@type EntityPlayer?
+        MovementRotationSource = nil, ---@type EntityPlayer?
+    }
+
+    return state
+end
+
+--]]
+
+--[[ Class methods ]]
 
 ---@return EntityMelee
 function EntityMelee.FromEffect(effect)
-    Registry.Add(effect, INITIAL_PROPS, INITIAL_STATE)
-    Callback.RegisterDefaults(effect)
+    RegistryManager.Add(effect, INITIAL_PROPS(effect), INITIAL_STATE(effect))
+    CallbackManager.RegisterDefaults(effect)
     return effect
 end
 
 ---Destroy effect, sprite and remove EntityMelee from registry
 function EntityMelee:Remove()
+    local props = assert(RegistryManager.GetProps(self))
+    local state = assert(RegistryManager.GetState(self))
+
     self:__fxcall "Remove"
-    Registry.Remove(self)
+
+    RegistryManager.Remove(self)
     return nil
 end
 
 ---Set the weapon's rotation to follow a player's aim direction
 ---@param player EntityPlayer
 function EntityMelee:RotateWithAim(player)
-    Registry.GetState(self).AimRotationSource = Util.MustBePlayer(player)
+    local state = assert(RegistryManager.GetState(self))
+    state.AimRotationSource = Util.MustBePlayer(player)
 end
 
 ---Set the weapon's rotation to follow a player's movement direction
 ---@param player EntityPlayer
 function EntityMelee:RotateWithMovement(player)
-    Registry.GetState(self).MovementRotationSource = Util.MustBePlayer(player)
+    local state = assert(RegistryManager.GetState(self))
+    state.MovementRotationSource = Util.MustBePlayer(player)
 end
 
---#endregion Class methods
+---Swing the weapon
+---@param animation     string              Animation to play
+---@param direction?    Direction|Vector    Direction of the swing, if different from the weapon's current rotation
+---@param force?        boolean             Override previously playing animation — Default: `false`
+function EntityMelee:Swing(animation, direction, force)
+    local EvalDirection = Util.When(type(direction), {
+        ["nil"] = function()
+            return Vector.FromAngle(self:GetSprite().Rotation) ---@type Vector
+        end,
+        ["number"] = function()
+            return Vector.FromAngle(direction) ---@type Vector
+        end,
+        ["userdata"] = function()
+            assert(Util.InstanceOfIsaacApiClass(direction, Vector), "Given direction is `userdata` but not a Vector.")
+            return direction
+        end,
+    })
+
+    direction = EvalDirection() ---@cast direction Vector
+    if not force and Isaac.RunCallback(Callback.MC_PRE_WEAPON_SWING, self, direction) then return end
+
+    local state = assert(RegistryManager.GetState(self))
+    local sprite = self:GetSprite()
+
+    state.IsSwinging = true
+    state.CurrentAnimation = animation
+
+    sprite.Rotation = self.AimRotationOffset + direction:GetAngleDegrees()
+    sprite:Play(animation, true)
+
+    Isaac.RunCallback(Callback.MC_WEAPON_SWING_START, self, direction)
+end
+
+---@return boolean IsSwinging
+function EntityMelee:IsSwinging()
+    local state = assert(RegistryManager.GetState(self))
+    return state.IsSwinging
+end
+
+function EntityMelee:StartCharging()
+    if Isaac.RunCallback(Callback.MC_PRE_WEAPON_CHARGE, self) then return end
+
+    local state = assert(RegistryManager.GetState(self))
+    local props = assert(RegistryManager.GetProps(self))
+
+    if not state.Chargebar then
+        state.Chargebar = Sprite()
+        state.Chargebar:Load(props.ChargebarSprite, true)
+    end
+
+    state.IsCharging = true
+    state.Chargebar:Render(props.GetChargebarPosition())
+    state.Chargebar:Update()
+
+    print "Start charging."
+    print("Props: " .. inspect(props))
+    print("State: " .. inspect(state))
+end
+
+function EntityMelee:StopCharging()
+    assert(RegistryManager.GetState(self)).IsCharging = false
+end
+
+---@return boolean IsCharging
+function EntityMelee:IsCharging()
+    local state = assert(RegistryManager.GetState(self))
+    return state.IsCharging
+end
+
+--]]
 
 mod.__EntityMelee = EntityMelee
 return mod.__EntityMelee

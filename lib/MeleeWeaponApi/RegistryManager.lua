@@ -6,6 +6,7 @@
 -- You should have received a copy of the license along with this
 -- work. If not, see <https://creativecommons.org/licenses/by-nc-sa/4.0/>.
 
+local inspect = require "lib.inspect"
 local mod = require "lib.MeleeWeaponApi.mod" ---@class MeleeWeaponApiModReference
 
 local Util = include "lib.MeleeWeaponApi.Util"
@@ -21,9 +22,10 @@ local RegistryManager = mod.__RegistryManager or {}
 function RegistryManager.Add(weapon, props, state)
     ---@type WeaponRegistryEntry
     local reg = {
-        props = Util.CloneTable(props),
-        state = Util.CloneTable(state),
+        props = props,
+        state = state,
         callbacks = setmetatable({}, {
+            __metatable = false,
             __index = function(self, key)
                 if not rawget(self, key) then self[key] = {} end
                 return rawget(self, key)

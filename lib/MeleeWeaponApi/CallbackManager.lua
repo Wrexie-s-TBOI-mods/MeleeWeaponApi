@@ -6,17 +6,19 @@
 -- You should have received a copy of the license along with this
 -- work. If not, see <https://creativecommons.org/licenses/by-nc-sa/4.0/>.
 
+local inspect = include "lib.inspect"
+
 local mod = require "lib.MeleeWeaponApi.mod" ---@class MeleeWeaponApiModReference
 
-local CB = include "lib.MeleeWeaponApi.Callbacks"
-local Registry = include "lib.MeleeWeaponApi.RegistryManager"
 local Util = include "lib.MeleeWeaponApi.Util"
+local RegistryManager = include "lib.MeleeWeaponApi.RegistryManager"
+local MeleeCallback = include "lib.MeleeWeaponApi.Callbacks"
 
 ---@class MeleeWeaponCallbackManager
 local CallbackManager = mod.__CallbackManager or {}
 
----@param table table<RegistryCallback>
----@return table<RegistryCallback>
+---@param table table<integer, RegistryCallback>
+---@return table<integer, RegistryCallback>
 local function Callbacks(table)
     return setmetatable(table, {
         __pairs = function(self)
@@ -44,56 +46,104 @@ local function Callbacks(table)
     })
 end
 
----@param weapon EntityMelee
-function CallbackManager.RegisterDefaults(weapon)
-    local state = Registry.GetState(weapon) ---@cast state -nil
-    local props = Registry.GetProps(weapon) ---@cast props -nil
+---@param target EntityMelee
+function CallbackManager.RegisterDefaults(target)
+    local hash = GetPtrHash(target)
+    local state = assert(RegistryManager.GetState(target))
+    local props = assert(RegistryManager.GetProps(target))
 
-    local function thisWeapon(effect)
-        return GetPtrHash(effect) == GetPtrHash(weapon)
+    local function ThisWeapon(effect)
+        return GetPtrHash(effect) == hash
     end
 
     local defaults = {
-        [ModCallbacks.MC_POST_PLAYER_UPDATE] = Callbacks {
-            { ---RotateWithAim
-                ---@param _ ModReference
-                ---@param player EntityPlayer
-                function(_, player)
-                    if not state.AimRotationSource or GetPtrHash(state.AimRotationSource) ~= GetPtrHash(player) then
-                        return
-                    end
-
-                    local aiming, direction = Util.IsAiming(player)
-                    if not aiming then return end
-
-                    local angle = direction:GetAngleDegrees()
-                    weapon.Rotation = angle + props.AimRotationOffset
-                    weapon:GetSprite().Rotation = angle + props.AimRotationOffset
-                end,
-            },
-            -- { ---RotateWithMovement
-
-            -- },
-        },
+        --[[ ModCallback ]]
         [ModCallbacks.MC_POST_EFFECT_UPDATE] = Callbacks {
             { ---Trigger MC_POST_WEAPON_UPDATE
                 function(_, effect)
-                    if thisWeapon(effect) then Isaac.RunCallback(CB.MC_POST_WEAPON_UPDATE, weapon) end
+                    if ThisWeapon(effect) then Isaac.RunCallback(MeleeCallback.MC_POST_WEAPON_UPDATE, target) end
                 end,
-                weapon.Variant,
+                target.Variant,
             },
         },
         [ModCallbacks.MC_POST_EFFECT_RENDER] = Callbacks {
             { ---Trigger MC_POST_WEAPON_RENDER
                 function(_, effect, offset)
-                    if thisWeapon(effect) then Isaac.RunCallback(CB.MC_POST_WEAPON_RENDER, weapon, offset) end
+                    if ThisWeapon(effect) then
+                        Isaac.RunCallback(MeleeCallback.MC_POST_WEAPON_RENDER, effect, offset)
+                    end
                 end,
-                weapon.Variant,
+                target.Variant,
             },
         },
+        --]]
+
+        --[[ MeleeCallback ]]
+        [MeleeCallback.MC_POST_WEAPON_UPDATE] = Callbacks {
+            { ---Trigger MC_POST_WEAPON_SWING
+                ---@param _ MeleeWeaponApiModReference
+                ---@param weapon EntityMelee
+                function(_, weapon)
+                    if not ThisWeapon(weapon) or not weapon:IsSwinging() then return end
+
+                    local sprite = weapon:GetSprite()
+                    if not sprite:IsFinished(state.CurrentAnimation) then return end
+
+                    state.IsSwinging = false
+                    Isaac.RunCallback(MeleeCallback.MC_POST_WEAPON_SWING, weapon)
+                end,
+            },
+            { ---Trigger MC_POST_WEAPON_CHARGE_UPDATE or MC_WEAPON_CHARGE_FULL
+                ---@param _ MeleeWeaponApiModReference
+                ---@param weapon EntityMelee
+                function(_, weapon)
+                    if not ThisWeapon(weapon) or not weapon:IsCharging() then return end
+                    if props.ChargePercentage >= 100 then
+                        Isaac.RunCallback(MeleeCallback.MC_WEAPON_CHARGE_FULL, weapon)
+                    end
+                    Isaac.RunCallback(MeleeCallback.MC_POST_WEAPON_CHARGE_UPDATE, weapon)
+                end,
+            },
+        },
+        [MeleeCallback.MC_POST_WEAPON_RENDER] = Callbacks {
+            { ---Update/render chargebar if active
+                function(_, weapon)
+                    if not ThisWeapon(weapon) or not state.Chargebar then return end
+
+                    local bar = state.Chargebar
+                    local percent = math.max(0, props.ChargePercentage)
+
+                    if state.IsCharging then
+                        if percent < 99 then bar:SetFrame("Charging", math.floor(percent)) end
+                    elseif not bar:IsPlaying "Disappear" and not bar:IsFinished "Disappear" then
+                        bar:Play("Disappear", true)
+                    end
+
+                    bar:Render(props.GetChargebarPosition())
+                    bar:Update()
+                end,
+            },
+        },
+        [MeleeCallback.MC_WEAPON_CHARGE_FULL] = Callbacks {
+            { --- Play chargbar full animation
+                function(_, weapon)
+                    if not ThisWeapon(weapon) or not state.Chargebar or not state.IsCharging then return end
+
+                    local bar = state.Chargebar
+                    if bar:IsFinished "StartCharged" or bar:IsFinished "Charged" then
+                        bar:Play("Charged", true)
+                        print "+Play charged"
+                    elseif not bar:IsPlaying "StartCharged" and not bar:IsPlaying "Charged" then
+                        print "+Play start"
+                        bar:Play("StartCharged", true)
+                    end
+                end,
+            },
+        },
+        --]]
     }
 
-    Registry.AddCallbacks(weapon, defaults)
+    RegistryManager.AddCallbacks(target, defaults)
 end
 
 mod.__CallbackManager = CallbackManager
