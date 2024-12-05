@@ -159,8 +159,8 @@ function Item:ActivateRampage(item, rng, player, flags, slot, custom)
     state.active = true
 
     local axe = Melee.Create { Spawner = player, Variant = Item.EFFECT_VARIANT }
-    axe.DepthOffset = player.DepthOffset + 1
-    axe:StartCharging()
+    axe.DepthOffset = player.DepthOffset - 1
+    axe.Capsules = { "tip" }
     state.buzzaxe = axe
 
     if state.beast and player:CanPickRedHearts() then player:AddHearts(player:GetMaxHearts()) end

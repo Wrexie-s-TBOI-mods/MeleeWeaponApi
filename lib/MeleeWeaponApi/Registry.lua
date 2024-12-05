@@ -21,9 +21,8 @@ local Meta = {}
 ---@param table WeaponRegistry
 ---@param weapon EntityMelee
 function Meta.__index(table, weapon)
-    local hash = GetPtrHash(weapon)
-
-    return table[hash]
+    local ok, hash = pcall(GetPtrHash, weapon)
+    if ok then return table[hash] end
 end
 
 ---@param table WeaponRegistry

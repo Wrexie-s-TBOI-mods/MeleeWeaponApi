@@ -21,7 +21,7 @@
         maxcharges="120"
         initcharge="120"
         cache="damage speed weapon"
-        cooldown="150"
+        cooldown="300"
         persistent="true"
         cleareffectsonremove="true" />
 </items>

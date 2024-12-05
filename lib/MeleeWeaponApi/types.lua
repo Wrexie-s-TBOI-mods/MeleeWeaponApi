@@ -8,6 +8,8 @@
 
 ---@meta
 
+---@alias PtrHash integer
+
 ---@class EntityMelee : EntityEffect, MeleeWeaponProps
 
 ---@class MeleeWeaponCreateOptions
@@ -17,17 +19,8 @@
 ---@field PosVel?   PosVel              Initial position and velocity — Default: `player`'s pos and `Vector.Zero`
 ---@field Follow?   boolean             Follow the spawner — Default: true
 
----@alias CallbackFn fun(ModReference, ...)
-
----@class RegistryCallback
----@field [1] CallbackFn    Callback function
----@field [2] integer?      `AddCallback` third parameter
-
----@alias RegistryCallbackTable table<ModCallbacks, table<RegistryCallback>>
-
 ---@class WeaponRegistryEntry
 ---@field props     MeleeWeaponProps
 ---@field state     MeleeWeaponState
----@field callbacks RegistryCallbackTable
 
 ---@class MeleeWeaponApiModReference : ModReference

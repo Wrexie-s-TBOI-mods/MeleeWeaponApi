@@ -8,6 +8,8 @@
 
 local inspect = include "lib.inspect"
 
+include "lib.MeleeWeaponApi.AddCallbacks"
+
 local mod = require "lib.MeleeWeaponApi.mod" ---@class MeleeWeaponApiModReference
 
 local EntityMelee = include "lib.MeleeWeaponApi.EntityMelee"

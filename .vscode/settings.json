@@ -12,7 +12,7 @@
         "[lua]": {
             "foldStart": "--[[ [NAME] ]]",
             "foldEnd": "--]]",
-            "foldStartRegex": "--(-?\\s*{{|\\[\\[)",
+            "foldStartRegex": "--(-?\\s*{{|\\[\\[.*\\]\\])",
             "foldEndRegex": "--(-?\\s*}}|]])",
             "disableFolding": false
         }

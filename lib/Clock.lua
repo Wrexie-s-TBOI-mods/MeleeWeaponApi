@@ -14,8 +14,8 @@ local function Clock(maxTick)
 
     ---@class Clock
     local clock = {
-        now = 0,
-        max = maxTick,
+        now = 0, ---@type integer
+        max = maxTick, ---@type integer
     }
 
     ---@param newMax? integer

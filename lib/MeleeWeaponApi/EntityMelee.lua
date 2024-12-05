@@ -6,12 +6,9 @@
 -- You should have received a copy of the license along with this
 -- work. If not, see <https://creativecommons.org/licenses/by-nc-sa/4.0/>.
 
-local inspect = require "lib.inspect"
-
 local mod = require "lib.MeleeWeaponApi.mod" ---@class MeleeWeaponApiModReference
 
 local Util = include "lib.MeleeWeaponApi.Util"
-local CallbackManager = include "lib.MeleeWeaponApi.CallbackManager"
 local RegistryManager = include "lib.MeleeWeaponApi.RegistryManager"
 local Callback = include "lib.MeleeWeaponApi.Callbacks"
 
@@ -28,10 +25,9 @@ end
 
 rawset(Super, "__index", function(self, key)
     local props = RegistryManager.GetProps(self)
-    if props then
-        if EntityMelee[key] then return EntityMelee[key] end
-        if props[key] then return props[key] end
-    end
+
+    if EntityMelee[key] then return EntityMelee[key] end
+    if props[key] then return props[key] end
 
     return EntityMelee.__fxindex(self, key)
 end)
@@ -39,7 +35,7 @@ end)
 rawset(Super, "__newindex", function(self, key, value)
     local props = RegistryManager.GetProps(self)
 
-    if props and props[key] then
+    if props[key] then
         props[key] = value
         return
     end
@@ -57,9 +53,7 @@ end
 
 --]]
 
---[[ Defaults ]]
-
----@param weapon EntityMelee
+--[[ Properties and overrideable methods ]]
 local function INITIAL_PROPS()
     ---@class MeleeWeaponProps
     local props = {
@@ -69,20 +63,73 @@ local function INITIAL_PROPS()
         ChargePercentage = 0,
         ChargebarSprite = "gfx/chargebar.anm2",
 
-        ---@param self EntityMelee
-        GetChargebarPosition = function(self)
-            local pos = self.SpawnerEntity.Position
-            local scale = self.SpawnerEntity.SpriteScale
-            local offsetX = Vector(-20, 0) * scale
-            local offsetY = Vector(0, 50) * scale
-            local offset = offsetX + offsetY
+        --[[Null capsules defined in your sprite's `.anm2`.  
+            They're the hitboxes of your weapon, and will be iterated over during a swing to simulate collision.  
+            During a swing, `EntityMelee:OnSwingHit()` will be called for each entity found in any of the capsules,
+            and the entities will be passed as the first argument (`target`) after `self`.
+            ]]
+        Capsules = {},
 
-            return Isaac.WorldToScreen(pos - offset)
-        end,
+        --[[This field is to store any arbitrary data of your choice.
+            ]]
+        CustomData = {}, ---@type any
     }
 
+    ---Here we cast so that we get completion when using `self` in the callback definitions.
+    ---@cast props EntityMelee
+
+    --[[Called when rendering the chargebar.
+        Defaults to roughly the same position as the game's original chargebar.
+        ]]
+    function props:GetChargebarPosition()
+        local pos = self.SpawnerEntity.Position
+        local scale = self.SpawnerEntity.SpriteScale
+        local offsetX = Vector(-20, 0) * scale
+        local offsetY = Vector(0, 50) * scale
+        local offset = offsetX + offsetY
+
+        return Isaac.WorldToScreen(pos - offset)
+    end
+
+    --[[Called on every update of an `EntityMelee`, if it is charging.
+        ]]
+    function props:OnChargeUpdate() end
+
+    --[[Called on every update of an `EntityMelee`, if it is charging and `EntityMelee.ChargePercentage >= 100` 
+        ]]
+    function props:OnChargeFull() end
+
+    --[[Called before each swing.
+        If a falsy value is returned, prevents the swing.  
+        By default, checks that it's not already swinging and,
+        if spawner entity is a player, checks that they can shoot.
+        ]]
+    function props:OnPreSwing()
+        if self:IsSwinging() then return false end
+
+        local player = self.SpawnerEntity:ToPlayer()
+
+        return player and player:CanShoot()
+    end
+
+    --[[Called after each swing.
+        ]]
+    function props:OnPostSwing() end
+
+    --[[Called for every entity hit by a swing.  
+        Be sure to set your `EntityMelee.Capsules` for this to work properly, else it will not be called !  
+        When this returns `nil`, it will not be called again for the same target of the same swing.
+        ]]
+    --- @param target Entity
+    function props:OnSwingHit(target) end
+
+    ---Back to original type to prevent breaking inference
+    ---@cast props MeleeWeaponProps
     return props
 end
+--]]
+
+--[[ Internal state ]]
 
 local function INITIAL_STATE()
     ---@class MeleeWeaponState
@@ -92,6 +139,8 @@ local function INITIAL_STATE()
         IsSwinging = false,
         IsCharging = false,
         IsThrowing = false,
+
+        SwingHitBlacklist = {}, ---@type table<integer, PtrHash>
 
         Chargebar = nil, ---@type Sprite
 
@@ -114,7 +163,6 @@ end
 ---@return EntityMelee
 function EntityMelee.FromEffect(effect)
     RegistryManager.Add(effect, INITIAL_PROPS(), INITIAL_STATE())
-    CallbackManager.RegisterDefaults(effect)
     return effect
 end
 
@@ -128,14 +176,14 @@ end
 ---Set the weapon's rotation to follow a player's aim direction
 ---@param player EntityPlayer
 function EntityMelee:RotateWithAim(player)
-    local state = assert(RegistryManager.GetState(self))
+    local state = RegistryManager.GetState(self)
     state.AimRotationSource = Util.MustBePlayer(player)
 end
 
 ---Set the weapon's rotation to follow a player's movement direction
 ---@param player EntityPlayer
 function EntityMelee:RotateWithMovement(player)
-    local state = assert(RegistryManager.GetState(self))
+    local state = RegistryManager.GetState(self)
     state.MovementRotationSource = Util.MustBePlayer(player)
 end
 
@@ -144,23 +192,23 @@ end
 ---@param direction?    Direction|Vector    Direction of the swing, if different from the weapon's current rotation
 ---@param force?        boolean             Override previously playing animation — Default: `false`
 function EntityMelee:Swing(animation, direction, force)
+    if not force and not self:OnPreSwing() then return end
+
     local EvalDirection = Util.When(type(direction), {
         ["nil"] = function()
-            return Vector.FromAngle(self:GetSprite().Rotation) ---@type Vector
+            return Vector.FromAngle(self:GetSprite().Rotation)
         end,
         ["number"] = function()
-            return Vector.FromAngle(direction) ---@type Vector
+            return Vector.FromAngle(direction)
         end,
         ["userdata"] = function()
             assert(Util.InstanceOfIsaacApiClass(direction, Vector), "Given direction is `userdata` but not a Vector.")
             return direction
         end,
     })
-
     direction = EvalDirection() ---@cast direction Vector
-    if not force and Isaac.RunCallback(Callback.MC_PRE_WEAPON_SWING, self, direction) then return end
 
-    local state = assert(RegistryManager.GetState(self))
+    local state = RegistryManager.GetState(self)
     local sprite = self:GetSprite()
 
     state.IsSwinging = true
@@ -168,20 +216,18 @@ function EntityMelee:Swing(animation, direction, force)
 
     sprite.Rotation = self.AimRotationOffset + direction:GetAngleDegrees()
     sprite:Play(animation, true)
-
-    Isaac.RunCallback(Callback.MC_WEAPON_SWING_START, self, direction)
 end
 
 ---@return boolean IsSwinging
 function EntityMelee:IsSwinging()
-    local state = assert(RegistryManager.GetState(self))
+    local state = RegistryManager.GetState(self)
     return state.IsSwinging
 end
 
 function EntityMelee:StartCharging()
     if Isaac.RunCallback(Callback.MC_PRE_WEAPON_CHARGE, self) then return end
 
-    local state = assert(RegistryManager.GetState(self))
+    local state = RegistryManager.GetState(self)
 
     if not state.Chargebar then
         state.Chargebar = Sprite()
@@ -189,18 +235,15 @@ function EntityMelee:StartCharging()
     end
 
     state.IsCharging = true
-
-    print "Start charging."
 end
 
 function EntityMelee:StopCharging()
-    assert(RegistryManager.GetState(self)).IsCharging = false
+    RegistryManager.GetState(self).IsCharging = false
 end
 
 ---@return boolean IsCharging
 function EntityMelee:IsCharging()
-    local state = assert(RegistryManager.GetState(self))
-    return state.IsCharging
+    return RegistryManager.GetState(self).IsCharging
 end
 
 --]]
