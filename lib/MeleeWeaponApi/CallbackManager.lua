@@ -50,7 +50,6 @@ end
 function CallbackManager.RegisterDefaults(target)
     local hash = GetPtrHash(target)
     local state = assert(RegistryManager.GetState(target))
-    local props = assert(RegistryManager.GetProps(target))
 
     local function ThisWeapon(effect)
         return GetPtrHash(effect) == hash
@@ -98,7 +97,7 @@ function CallbackManager.RegisterDefaults(target)
                 ---@param weapon EntityMelee
                 function(_, weapon)
                     if not ThisWeapon(weapon) or not weapon:IsCharging() then return end
-                    if props.ChargePercentage >= 100 then
+                    if weapon.ChargePercentage >= 100 then
                         Isaac.RunCallback(MeleeCallback.MC_WEAPON_CHARGE_FULL, weapon)
                     end
                     Isaac.RunCallback(MeleeCallback.MC_POST_WEAPON_CHARGE_UPDATE, weapon)
@@ -111,7 +110,7 @@ function CallbackManager.RegisterDefaults(target)
                     if not ThisWeapon(weapon) or not state.Chargebar then return end
 
                     local bar = state.Chargebar
-                    local percent = math.max(0, props.ChargePercentage)
+                    local percent = math.max(0, weapon.ChargePercentage)
 
                     if state.IsCharging then
                         if percent < 99 then bar:SetFrame("Charging", math.floor(percent)) end
@@ -119,7 +118,7 @@ function CallbackManager.RegisterDefaults(target)
                         bar:Play("Disappear", true)
                     end
 
-                    bar:Render(props.GetChargebarPosition())
+                    bar:Render(weapon:GetChargebarPosition())
                     bar:Update()
                 end,
             },

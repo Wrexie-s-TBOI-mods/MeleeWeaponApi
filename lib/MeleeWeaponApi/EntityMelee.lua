@@ -60,7 +60,7 @@ end
 --[[ Defaults ]]
 
 ---@param weapon EntityMelee
-local function INITIAL_PROPS(weapon)
+local function INITIAL_PROPS()
     ---@class MeleeWeaponProps
     local props = {
         AimRotationOffset = 0,
@@ -68,15 +68,15 @@ local function INITIAL_PROPS(weapon)
 
         ChargePercentage = 0,
         ChargebarSprite = "gfx/chargebar.anm2",
-        GetChargebarPosition = function()
-            return weapon.SpawnerEntity:GetPosVel().Position
+        GetChargebarPosition = function(self)
+            return Isaac.WorldToScreen(self.SpawnerEntity.Position)
         end,
     }
 
     return props
 end
 
-local function INITIAL_STATE(_weapon)
+local function INITIAL_STATE()
     ---@class MeleeWeaponState
     local state = {
         CurrentAnimation = nil, ---@type string?
@@ -105,18 +105,14 @@ end
 
 ---@return EntityMelee
 function EntityMelee.FromEffect(effect)
-    RegistryManager.Add(effect, INITIAL_PROPS(effect), INITIAL_STATE(effect))
+    RegistryManager.Add(effect, INITIAL_PROPS(), INITIAL_STATE())
     CallbackManager.RegisterDefaults(effect)
     return effect
 end
 
 ---Destroy effect, sprite and remove EntityMelee from registry
 function EntityMelee:Remove()
-    local props = assert(RegistryManager.GetProps(self))
-    local state = assert(RegistryManager.GetState(self))
-
     self:__fxcall "Remove"
-
     RegistryManager.Remove(self)
     return nil
 end
@@ -178,20 +174,17 @@ function EntityMelee:StartCharging()
     if Isaac.RunCallback(Callback.MC_PRE_WEAPON_CHARGE, self) then return end
 
     local state = assert(RegistryManager.GetState(self))
-    local props = assert(RegistryManager.GetProps(self))
 
     if not state.Chargebar then
         state.Chargebar = Sprite()
-        state.Chargebar:Load(props.ChargebarSprite, true)
+        state.Chargebar:Load(self.ChargebarSprite, true)
     end
 
     state.IsCharging = true
-    state.Chargebar:Render(props.GetChargebarPosition())
+    state.Chargebar:Render(self.GetChargebarPosition())
     state.Chargebar:Update()
 
     print "Start charging."
-    print("Props: " .. inspect(props))
-    print("State: " .. inspect(state))
 end
 
 function EntityMelee:StopCharging()
