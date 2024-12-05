@@ -68,8 +68,16 @@ local function INITIAL_PROPS()
 
         ChargePercentage = 0,
         ChargebarSprite = "gfx/chargebar.anm2",
+
+        ---@param self EntityMelee
         GetChargebarPosition = function(self)
-            return Isaac.WorldToScreen(self.SpawnerEntity.Position)
+            local pos = self.SpawnerEntity.Position
+            local scale = self.SpawnerEntity.SpriteScale
+            local offsetX = Vector(-20, 0) * scale
+            local offsetY = Vector(0, 50) * scale
+            local offset = offsetX + offsetY
+
+            return Isaac.WorldToScreen(pos - offset)
         end,
     }
 
@@ -181,8 +189,6 @@ function EntityMelee:StartCharging()
     end
 
     state.IsCharging = true
-    state.Chargebar:Render(self.GetChargebarPosition())
-    state.Chargebar:Update()
 
     print "Start charging."
 end

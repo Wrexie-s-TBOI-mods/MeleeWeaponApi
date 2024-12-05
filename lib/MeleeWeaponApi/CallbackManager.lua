@@ -114,8 +114,12 @@ function CallbackManager.RegisterDefaults(target)
 
                     if state.IsCharging then
                         if percent < 99 then bar:SetFrame("Charging", math.floor(percent)) end
-                    elseif not bar:IsPlaying "Disappear" and not bar:IsFinished "Disappear" then
-                        bar:Play("Disappear", true)
+                    elseif not bar:IsPlaying "Disappear" then
+                        if bar:IsFinished "Disappear" then
+                            state.Chargebar = nil
+                        else
+                            bar:Play("Disappear", true)
+                        end
                     end
 
                     bar:Render(weapon:GetChargebarPosition())
