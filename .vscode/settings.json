@@ -7,4 +7,14 @@
     "licenser.license": "CC-BY-NC-SA-4",
     "licenser.projectName": "BL2 Krieg - TBOI: Repentance character mod",
     "stylua.targetReleaseVersion": "latest",
+    "maptz.regionfolder": {
+        "collapseDefaultRegionsOnOpen": true,
+        "[lua]": {
+            "foldStart": "--[[ [NAME] ]]",
+            "foldEnd": "--]]",
+            "foldStartRegex": "--(-?\\s*{{|\\[\\[)",
+            "foldEndRegex": "--(-?\\s*}}|]])",
+            "disableFolding": false
+        }
+    }
 }

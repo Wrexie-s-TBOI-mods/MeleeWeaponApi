@@ -245,7 +245,7 @@
 		"XMLNode",
 		"REPENTOGON"
 	],
-    "diagnostics.disable": [
-        "redefined-local"
-    ]
+	"diagnostics.disable": [
+		"redefined-local"
+	]
 }
