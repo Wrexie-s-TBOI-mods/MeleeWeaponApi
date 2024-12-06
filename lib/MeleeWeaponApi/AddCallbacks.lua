@@ -49,6 +49,21 @@ mod:AddCallback(
 
         state.SwingHitBlacklist = blacklist
 
+        ---@param entity Entity
+        local function maybeTriggerSwingHit(entity)
+            local hash = GetPtrHash(entity)
+            if blacklist[hash] then return end
+            blacklist[hash] = weapon:OnSwingHit(entity) == nil
+        end
+
+        for _, layer in ipairs(weapon.Capsules) do
+            local capsule = weapon:GetNullCapsule(layer)
+
+            for _, entity in ipairs(Isaac.FindInCapsule(capsule, weapon.SwingTargets)) do
+                maybeTriggerSwingHit(entity)
+            end
+        end
+
         if sprite:IsFinished(state.CurrentAnimation) then
             state.IsSwinging = false
             state.SwingHitBlacklist = nil

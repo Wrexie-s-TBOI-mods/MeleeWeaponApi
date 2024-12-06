@@ -53,6 +53,14 @@ end
 
 --]]
 
+local ANY_ENTITY_PARTITION = EntityPartition.BULLET
+    | EntityPartition.EFFECT
+    | EntityPartition.ENEMY
+    | EntityPartition.FAMILIAR
+    | EntityPartition.PICKUP
+    | EntityPartition.PLAYER
+    | EntityPartition.TEAR
+
 --[[ Properties and overrideable methods ]]
 local function INITIAL_PROPS()
     ---@class MeleeWeaponProps
@@ -69,6 +77,8 @@ local function INITIAL_PROPS()
             and the entities will be passed as the first argument (`target`) after `self`.
             ]]
         Capsules = {}, ---@type string[]
+
+        SwingTargets = ANY_ENTITY_PARTITION, ---@type EntityPartition
 
         --[[This field is to store any arbitrary data of your choice.
             ]]
@@ -140,7 +150,7 @@ local function INITIAL_STATE()
         IsCharging = false,
         IsThrowing = false,
 
-        SwingHitBlacklist = {}, ---@type table<integer, PtrHash>
+        SwingHitBlacklist = {}, ---@type table<PtrHash, boolean>
 
         Chargebar = nil, ---@type Sprite
 
@@ -194,6 +204,7 @@ end
 function EntityMelee:Swing(animation, direction, force)
     if not force and not self:OnSwingStart() then return end
 
+    ---@type fun(): Vector
     local EvalDirection = Util.When(type(direction), {
         ["nil"] = function()
             return Vector.FromAngle(self:GetSprite().Rotation)
@@ -206,7 +217,7 @@ function EntityMelee:Swing(animation, direction, force)
             return direction
         end,
     })
-    direction = EvalDirection() ---@cast direction Vector
+    direction = EvalDirection()
 
     local state = RegistryManager.GetState(self)
     local sprite = self:GetSprite()
