@@ -6,7 +6,6 @@
 -- You should have received a copy of the license along with this
 -- work. If not, see <https://creativecommons.org/licenses/by-nc-sa/4.0/>.
 
-local inspect = require "lib.inspect"
 local mod = require "lib.MeleeWeaponapi.mod" ---@class MeleeWeaponApiModReference
 
 ---@class WeaponRegistry
@@ -18,16 +17,16 @@ local Registry = mod.__Registry or {
 ---@type metatable
 local Meta = {}
 
----@param table WeaponRegistry
----@param weapon EntityMelee
+---@param table     WeaponRegistry
+---@param weapon    EntityMelee
 function Meta.__index(table, weapon)
     local ok, hash = pcall(GetPtrHash, weapon)
     if ok then return table[hash] end
 end
 
----@param table WeaponRegistry
----@param weapon EntityMelee
----@param value WeaponRegistryEntry
+---@param table     WeaponRegistry
+---@param weapon    EntityMelee
+---@param value     WeaponRegistryEntry
 function Meta.__newindex(table, weapon, value)
     local hash = GetPtrHash(weapon)
 

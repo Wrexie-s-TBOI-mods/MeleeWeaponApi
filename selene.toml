@@ -1,4 +1,4 @@
-std = "isaac"
+std = "isaac+krieg"
 
 [lints]
 multiple_statements = "allow"

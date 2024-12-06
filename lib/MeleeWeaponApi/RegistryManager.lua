@@ -14,7 +14,7 @@ local Registry = include "lib.MeleeWeaponApi.Registry"
 ---@class WeaponRegistryManager
 local RegistryManager = mod.__RegistryManager or {}
 
----@param weapon    EntityMelee
+---@param weapon    EntityEffect|EntityMelee
 ---@param props     MeleeWeaponProps
 ---@param state     MeleeWeaponState
 function RegistryManager.Add(weapon, props, state)
@@ -33,12 +33,14 @@ end
 
 ---@param weapon EntityMelee
 function RegistryManager.GetState(weapon)
-    return assert(Registry[weapon]).state
+    local entry = Registry[weapon]
+    return assert(entry).state
 end
 
 ---@param weapon EntityMelee
 function RegistryManager.GetProps(weapon)
-    return assert(Registry[weapon]).props
+    local entry = Registry[weapon]
+    return entry and entry.props
 end
 
 function RegistryManager.Size()

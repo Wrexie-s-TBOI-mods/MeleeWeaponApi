@@ -6,10 +6,19 @@
 -- You should have received a copy of the license along with this
 -- work. If not, see <https://creativecommons.org/licenses/by-nc-sa/4.0/>.
 
+local mod = require "lib.MeleeWeaponApi.mod" ---@class MeleeWeaponApiModReference
+
+---@class MeleeWeaponApi
+local Api = mod.__Api or {}
+mod.__Api = Api
+
+local Util = Api.Util or {}
+Api.Util = Util
+
 local MAX_TICK_DEFAULT = 60
 
 ---@param maxTick? integer default: `60`
-local function Clock(maxTick)
+function Util.Clock(maxTick)
     if type(maxTick) ~= "number" or maxTick < 1 then maxTick = MAX_TICK_DEFAULT end
 
     ---@class Clock
@@ -40,5 +49,3 @@ local function Clock(maxTick)
 
     return clock
 end
-
-return Clock

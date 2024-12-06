@@ -16,5 +16,8 @@
             "foldEndRegex": "--(-?\\s*}}|]])",
             "disableFolding": false
         }
+    },
+    "Lua.runtime.special": {
+        "LoadModule": "require"
     }
 }

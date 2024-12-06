@@ -6,11 +6,17 @@
 -- You should have received a copy of the license along with this
 -- work. If not, see <https://creativecommons.org/licenses/by-nc-sa/4.0/>.
 
-local mod = require "lib.MeleeWeaponApi.mod" ---@class MeleeWeaponApiModReference
+---@class KriegModReference : ModReference
+local mod = RegisterMod("Krieg", 1)
 
-local Api = mod.__Api or {}
-local CustomCallbacks = mod.__CustomCallbacks or include "lib.MeleeWeaponApi.Callbacks.CallbackId"
+local DEBUG = true
 
-Api.Callbacks = CustomCallbacks
+--[[Print stuff to the console but only in debug mode
+    ]]
+_G.dprint = DEBUG and function(...)
+    print(...)
+end or function()
+    -- Do nothing
+end
 
-include "lib.MeleeWeaponApi.Callbacks.init"
+return mod

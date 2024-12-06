@@ -27,6 +27,8 @@ globals:
     any: true
   CacheFlag:
     any: true
+  CallbackPriority:
+    any: true
   Card:
     any: true
   Challenge:

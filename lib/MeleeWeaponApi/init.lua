@@ -8,9 +8,19 @@
 
 local mod = require "lib.MeleeWeaponApi.mod" ---@class MeleeWeaponApiModReference
 
-local Api = mod.__Api or {}
-local CustomCallbacks = mod.__CustomCallbacks or include "lib.MeleeWeaponApi.Callbacks.CallbackId"
+local Api = mod.__Api or include "lib.MeleeWeaponApi.Api"
+mod.__Api = Api
 
-Api.Callbacks = CustomCallbacks
-
+--[[Though it might be tempting to sort these alphabetically (I'm looking at you, future Wrexes),
+    don't do it. It might break things. I'm not entirely sure. Maybe I should...
+    NO. RESIST THE TEMPTATION.
+    ]]
+include "lib.MeleeWeaponApi.Util.init"
+include "lib.MeleeWeaponApi.EntityMelee.init"
 include "lib.MeleeWeaponApi.Callbacks.init"
+
+-- selene: allow(global_usage)
+
+_G.MeleeWeaponApi = Api
+
+return Api

@@ -246,6 +246,7 @@
 		"REPENTOGON"
 	],
 	"diagnostics.disable": [
-		"redefined-local"
+		"redefined-local",
+        "unused-local"
 	]
 }

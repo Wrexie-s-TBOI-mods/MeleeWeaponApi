@@ -6,23 +6,13 @@
 -- You should have received a copy of the license along with this
 -- work. If not, see <https://creativecommons.org/licenses/by-nc-sa/4.0/>.
 
-local inspect = include "lib.inspect"
-
-include "lib.MeleeWeaponApi.AddCallbacks"
-
 local mod = require "lib.MeleeWeaponApi.mod" ---@class MeleeWeaponApiModReference
-
-local EntityMelee = include "lib.MeleeWeaponApi.EntityMelee"
-local Util = include "lib.MeleeWeaponApi.Util"
-
-local ENTITY_TYPE = EntityType.ENTITY_EFFECT
+local EntityMelee = mod.__EntityMelee or include "lib.MeleeWeaponApi.EntityMelee.init"
 
 ---@class MeleeWeaponApi
 local Api = mod.__Api or {}
 
-Api.Util = Util
-
-Api.Callbacks = include "lib.MeleeWeaponApi.Callbacks"
+local ENTITY_TYPE = EntityType.ENTITY_EFFECT
 
 ---@param o MeleeWeaponCreateOptions
 local function initOptions(o)
@@ -39,7 +29,10 @@ function Api.ValidateOptions() end
 
 ---@param options MeleeWeaponCreateOptions
 ---@return EntityMelee
-function Api.Create(options)
+function Api:Create(options)
+    local Util = self.Util
+    local Callbacks = self.Callbacks
+
     options = initOptions(options)
 
     local entity = Isaac.Spawn(
@@ -52,14 +45,14 @@ function Api.Create(options)
     )
 
     local effect = Util.MustBeEffect(entity)
-    local weapon = EntityMelee.FromEffect(effect)
+    local weapon = EntityMelee:FromEffect(effect)
 
     if options.Follow then weapon:FollowParent(options.Spawner) end
 
     local sprite = weapon:GetSprite()
     sprite.Rotation = Util.DirectionToAngleDegrees(Direction.NO_DIRECTION)
 
-    Isaac.RunCallback(Api.Callbacks.MC_POST_WEAPON_INIT, weapon)
+    Isaac.RunCallback(Callbacks.MC_POST_WEAPON_INIT, weapon)
     return weapon
 end
 
