@@ -79,5 +79,19 @@ function IterableList:Next()
     return self["Next" .. self.__order](self)
 end
 
+---@param index integer
+function IterableList:SetCurrent(index)
+    if index == nil then
+        index = 1
+    else
+        assert(
+            type(index) == "number" and index % 1 == 0 and index > 0 and index <= self.__size,
+            "Index out of bounds: " .. tostring(index)
+        )
+    end
+    self.__current = index
+    return self:Current()
+end
+
 mod.__AnimationList = IterableList
 return IterableList
