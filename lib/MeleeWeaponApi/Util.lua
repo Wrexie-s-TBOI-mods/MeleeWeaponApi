@@ -83,9 +83,9 @@ end
     When `value` is `nil`, returns `default`.  
 ]]
 ---@generic In, Out, Default
----@param value?    `In`
----@param cases     table<In, `Out`>
----@param default?  `Default`
+---@param value?    In
+---@param cases     { [In]: Out }
+---@param default?  Default
 ---@return Out|Default
 ---@todo Find if there's a magical way to type this properly
 function Util.When(value, cases, default)
@@ -94,7 +94,6 @@ function Util.When(value, cases, default)
 end
 
 ---@param direction Direction
----@return 0|90|180|-90
 function Util.DirectionToAngleDegrees(direction)
     return Util.When(direction, {
         [Direction.LEFT] = 180,
