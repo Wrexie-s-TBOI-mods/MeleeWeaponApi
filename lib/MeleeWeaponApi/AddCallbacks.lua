@@ -44,12 +44,15 @@ mod:AddCallback(
         if not weapon:IsSwinging() then return end
 
         local state = RegistryManager.GetState(weapon)
+        local blacklist = state.SwingHitBlacklist or {}
         local sprite = weapon:GetSprite()
+
+        state.SwingHitBlacklist = blacklist
 
         if sprite:IsFinished(state.CurrentAnimation) then
             state.IsSwinging = false
-            weapon:OnPostSwing()
-            return
+            state.SwingHitBlacklist = nil
+            weapon:OnSwingEnd()
         end
     end
 )

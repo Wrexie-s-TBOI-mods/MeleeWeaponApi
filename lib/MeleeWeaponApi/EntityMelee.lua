@@ -68,7 +68,7 @@ local function INITIAL_PROPS()
             During a swing, `EntityMelee:OnSwingHit()` will be called for each entity found in any of the capsules,
             and the entities will be passed as the first argument (`target`) after `self`.
             ]]
-        Capsules = {},
+        Capsules = {}, ---@type string[]
 
         --[[This field is to store any arbitrary data of your choice.
             ]]
@@ -104,7 +104,7 @@ local function INITIAL_PROPS()
         By default, checks that it's not already swinging and,
         if spawner entity is a player, checks that they can shoot.
         ]]
-    function props:OnPreSwing()
+    function props:OnSwingStart()
         if self:IsSwinging() then return false end
 
         local player = self.SpawnerEntity:ToPlayer()
@@ -114,7 +114,7 @@ local function INITIAL_PROPS()
 
     --[[Called after each swing.
         ]]
-    function props:OnPostSwing() end
+    function props:OnSwingEnd() end
 
     --[[Called for every entity hit by a swing.  
         Be sure to set your `EntityMelee.Capsules` for this to work properly, else it will not be called !  
@@ -192,7 +192,7 @@ end
 ---@param direction?    Direction|Vector    Direction of the swing, if different from the weapon's current rotation
 ---@param force?        boolean             Override previously playing animation — Default: `false`
 function EntityMelee:Swing(animation, direction, force)
-    if not force and not self:OnPreSwing() then return end
+    if not force and not self:OnSwingStart() then return end
 
     local EvalDirection = Util.When(type(direction), {
         ["nil"] = function()
