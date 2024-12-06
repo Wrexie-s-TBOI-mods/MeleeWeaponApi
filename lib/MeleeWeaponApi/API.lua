@@ -20,6 +20,8 @@ local ENTITY_TYPE = EntityType.ENTITY_EFFECT
 ---@class MeleeWeaponApi
 local Api = mod.__Api or {}
 
+Api.Util = Util
+
 Api.Callbacks = include "lib.MeleeWeaponApi.Callbacks"
 
 ---@param o MeleeWeaponCreateOptions
