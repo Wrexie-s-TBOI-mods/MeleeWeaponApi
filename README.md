@@ -101,13 +101,13 @@ Starts with **Buzzaxe** as pocket active item.
 - [ ] Buzzaxe Rampage
   - [x] Effect duration
   - [ ] Replace tears with melee
-  - [x] Damage multiplier
+  - [ ] Damage multiplier
   - [x] Speed multiplier
   - [x] Release the Beast
     - [ ] Handle Rotten Hearts
     - [x] Full heal
     - [x] Item recharge
-    - [x] Damage multiplier
+    - [ ] Damage multiplier
 - [ ] Taste of Blood
   - [ ] Wafer effect
   - [ ] Bloodlust stacks
@@ -124,9 +124,35 @@ Starts with **Buzzaxe** as pocket active item.
 
 ### Melee Weapon API
 
+- [ ] Lock API metatables
+  *Note: For convenience and dev flexibility, this should be done at the end*
 - [x] Find a way to make modules peristent through `include`s
+  - [ ] Prevent registering the same callbacks *again* on `luamod`
 - [x] Make `EntityWeapon` a subclass of `EntityEffect`
-- [ ] Lock metatables ?
+- [ ] EntityMelee
+  - [ ] Smooth rotation
+  - [ ] Swing
+    - [ ] Animate
+    - [ ] Swing direction
+    - [x] `OnSwingStart`
+    - [x] `OnSwingHit`
+    - [x] `OnSwingEnd`
+  - [ ] Charge
+    - [x] Chargebar
+    - [x] Callbacks
+      - [ ] `OnChargeStart`
+      - [x] `OnChargeUpdate`
+      - [x] `OnChargeFull`
+      - [ ] `OnChargeEnd`
+  - [ ] Throw
+    - [ ] Throw types
+      - [ ] None
+      - [ ] Detach
+      - [ ] Boomerang
+      - [ ] Custom ?
+    - [ ] `OnThrowStart`
+    - [ ] `OnThrowHit`
+    - [ ] `OnThrowEnd`
 
 ---
 
