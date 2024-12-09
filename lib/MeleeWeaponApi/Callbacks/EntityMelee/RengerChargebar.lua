@@ -31,6 +31,7 @@ local function RenderChargeBar(_mod, weapon)
         if bar:IsFinished "Disappear" then
             state.Chargebar = nil
         else
+            weapon:OnChargeRelease()
             bar:Play("Disappear", true)
         end
     end
@@ -40,8 +41,9 @@ local function RenderChargeBar(_mod, weapon)
 end
 
 return {
+    force = true,
     {
-        key = Callbacks.MC_POST_WEAPON_UPDATE,
+        key = Callbacks.MC_POST_WEAPON_RENDER,
         fn = RenderChargeBar,
     },
 }

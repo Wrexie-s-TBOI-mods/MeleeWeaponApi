@@ -17,13 +17,13 @@ Api.Util = Util
 
 local MAX_TICK_DEFAULT = 60
 
----@param maxTick? integer default: `60`
+---@param maxTick? number default: `60`
 function Util.Clock(maxTick)
     if type(maxTick) ~= "number" or maxTick < 1 then maxTick = MAX_TICK_DEFAULT end
 
     ---@class Clock
     local clock = {
-        now = 0, ---@type integer
+        now = 0, ---@type number
         max = maxTick, ---@type integer
     }
 
@@ -34,7 +34,7 @@ function Util.Clock(maxTick)
         self.max = newMax
     end
 
-    ---@param step? integer default: `1`
+    ---@param step? number default: `1`
     ---@return integer rotations How many rotations have been completed by this tick
     function clock:tick(step)
         if type(step) ~= "number" or step < 0 then step = 1 end

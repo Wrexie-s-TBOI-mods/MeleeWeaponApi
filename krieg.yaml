@@ -4,3 +4,5 @@ globals:
     args:
       - type: any
         required: false
+  MeleeWeaponApi:
+    any: true

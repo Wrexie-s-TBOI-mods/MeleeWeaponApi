@@ -21,8 +21,6 @@ local INITIAL_STATE = {
     CurrentAnimation = nil, ---@type string?
 
     IsCharging = false, ---@type boolean
-    WasCharging = false, ---@type boolean
-
     IsThrowing = false, ---@type boolean
 
     SwingHitBlacklist = {}, ---@type table<PtrHash, boolean>

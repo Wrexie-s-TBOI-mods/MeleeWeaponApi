@@ -18,6 +18,7 @@ end
 
 ---@type ModCallbackModule
 return {
+    force = true,
     {
         key = ModCallbacks.MC_POST_PLAYER_UPDATE,
         fn = OnPlayerUpdateRemoveWeapon,

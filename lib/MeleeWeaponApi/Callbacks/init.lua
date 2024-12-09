@@ -80,6 +80,7 @@ function CallbackManager:LoadModule(filename)
 
     if self[filename] then
         if not module.force then return end
+        dprint("[INFO] - MeleeWeaponApi: Force reload callback module " .. filename)
         self:UnloadModule(filename)
     end
 

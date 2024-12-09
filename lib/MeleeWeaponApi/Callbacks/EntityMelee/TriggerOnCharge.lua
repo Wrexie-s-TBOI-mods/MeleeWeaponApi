@@ -9,6 +9,12 @@
 local mod = require "lib.MeleeWeaponApi.mod"
 local Callbacks = mod.__Api.Callbacks or include "lib.MeleeWeaponApi.Callbacks.CallbackId"
 
+--- FIXME: `EntityMelee:OnChargeRelease()` is called in the `RenderChargeBar` callback,
+--- as is easier to tie it to the animation of the chargebar.
+--- At some point, chargebar rendering and charge states should be separated, because
+--- maybe not everyone wants a chargebar to appear when charging the weapon.
+--- Maybe they have some fancy animations that do the trick or whatever, who knows ?
+
 ---@param _mod      MeleeWeaponApiModReference
 ---@param weapon    EntityMelee
 local function TriggerOnCharge(_mod, weapon)
@@ -22,6 +28,7 @@ local function TriggerOnCharge(_mod, weapon)
 end
 
 return {
+    force = true,
     {
         key = Callbacks.MC_POST_WEAPON_UPDATE,
         fn = TriggerOnCharge,

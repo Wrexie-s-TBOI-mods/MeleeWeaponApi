@@ -8,4 +8,6 @@
 
 local mod = RegisterMod("!!Melee Weapon API", 1) ---@type MeleeWeaponApiModReference
 
+local DEBUG = true
+
 return mod

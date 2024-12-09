@@ -6,11 +6,9 @@
 -- You should have received a copy of the license along with this
 -- work. If not, see <https://creativecommons.org/licenses/by-nc-sa/4.0/>.
 
-local inspect = require "lib.inspect"
 local mod = require "src.mod" ---@class KriegModReference
 
-local Melee = include "lib.MeleeWeaponApi.init"
-local Util = Melee.Util
+local Util = MeleeWeaponApi.Util
 local IterableList = Util.IterableList
 
 ---@class Buzzaxe
@@ -18,12 +16,9 @@ local Buzzaxe = mod.__Buzzaxe or {}
 
 ---@param player EntityPlayer
 function Buzzaxe:CreateBuzzaxe(player)
-    dprint "[Buzzaxe:CreateBuzzaxe] Initated"
-
     local state = self.state[player]
-    dprint("[Buzzaxe:CreateBuzzaxe] Buzzaxe player state: " .. inspect(state))
 
-    local axe = Melee:Create { Spawner = player, Variant = self.Constants.BUZZAXE_ITEM_EFFECT_VARIANT }
+    local axe = MeleeWeaponApi:Create { Spawner = player, Variant = self.Constants.BUZZAXE_ITEM_EFFECT_VARIANT }
 
     axe.DepthOffset = player.DepthOffset + 1
 
@@ -34,31 +29,37 @@ function Buzzaxe:CreateBuzzaxe(player)
         SwingDown = IterableList { "SwingDown", "SwingDown2" },
     }
 
+    function axe:OnSwingHit(target)
+        if not target:IsVulnerableEnemy() or not target:IsActiveEnemy() then return end
+
+        local damage = player.Damage * Util.When(state.beast, Buzzaxe.Constants.MULT_DAMAGE)
+
+        target:TakeDamage(damage, 0, EntityRef(player), 0)
+        target:BloodExplode()
+        target:MakeBloodPoof(target.Position, nil, 0.5)
+    end
+
+    function axe:OnSwingStart()
+        if self:IsSwinging() then return false end
+        SFXManager():Play(SoundEffect.SOUND_SWORD_SPIN)
+        return true
+    end
+
     function axe:OnSwingEnd()
-        dprint "[Buzzaxe#OnSwingEnd] Start charging"
         self:StartCharging()
     end
 
     function axe:OnChargeUpdate()
-        local clock = self.CustomData.Clock
-        if clock:tick() ~= 0 then
-            self.ChargePercentage = self.ChargePercentage + 25
-            dprint("[Buzzaxe#OnChargeUpdate] Charge = " .. self.ChargePercentage)
-        end
+        self.ChargePercentage = self.ChargePercentage + (100 / 30) * 2
     end
 
     function axe:OnChargeFull()
-        dprint "[Buzzaxe#OnChargeFull] Stop charging"
         self:StopCharging()
     end
 
-    function axe:OnChargeEnd()
+    function axe:OnChargeRelease()
+        self.ChargePercentage = 0
         local anim = self.CustomData.Animations.Swing
-
-        dprint "[Buzzaxe#OnChargeFull] Fart"
-        SFXManager():Play(SoundEffect.SOUND_FART)
-
-        dprint "[Buzzaxe#OnChargeFull] Swing again"
         self:Swing(anim:Next())
     end
 

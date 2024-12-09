@@ -9,14 +9,4 @@
 ---@class KriegModReference : ModReference
 local mod = RegisterMod("Krieg", 1)
 
-local DEBUG = true
-
---[[Print stuff to the console but only in debug mode
-    ]]
-_G.dprint = DEBUG and function(...)
-    print(...)
-end or function()
-    -- Do nothing
-end
-
 return mod

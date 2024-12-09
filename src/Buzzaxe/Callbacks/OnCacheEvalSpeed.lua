@@ -21,6 +21,7 @@ end
 
 ---@type ModCallbackModule
 return {
+    force = true,
     {
         key = ModCallbacks.MC_EVALUATE_CACHE,
         fn = OnEvalCacheSpeed,

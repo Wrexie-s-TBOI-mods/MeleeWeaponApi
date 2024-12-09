@@ -9,7 +9,7 @@
 			<Layer Name="whoosh" Id="1" SpritesheetId="0"/>
 		</Layers>
 		<Nulls>
-			<Null Name="tip" Id="0" ShowRect="false"/>
+			<Null Name="tip" Id="0" ShowRect="true"/>
 		</Nulls>
 		<Events/>
 	</Content>

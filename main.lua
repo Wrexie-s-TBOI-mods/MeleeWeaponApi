@@ -6,4 +6,8 @@
 -- You should have received a copy of the license along with this
 -- work. If not, see <https://creativecommons.org/licenses/by-nc-sa/4.0/>.
 
+include "lib.MeleeWeaponApi.init"
+
+MeleeWeaponApi.DEBUG = 1
+
 include "src.Buzzaxe.init"

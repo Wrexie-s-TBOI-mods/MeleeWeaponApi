@@ -13,15 +13,15 @@ local RegistryManager = mod.__RegistryManager or include "lib.MeleeWeaponApi.Reg
 
 ---@param _mod      MeleeWeaponApiModReference
 ---@param effect    EntityEffect
----@param offset    Vector
-local function TriggerMcPostWeaponUpdate(_mod, effect, offset)
+local function TriggerMcPostWeaponUpdate(_mod, effect)
     if not RegistryManager.Has(effect) then return end
 
-    Isaac.RunCallback(Callbacks.MC_POST_WEAPON_RENDER, effect, offset)
+    Isaac.RunCallback(Callbacks.MC_POST_WEAPON_UPDATE, effect)
 end
 
 ---@type ModCallbackModule
 return {
+    force = true,
     {
         key = ModCallbacks.MC_POST_EFFECT_UPDATE,
         fn = TriggerMcPostWeaponUpdate,

@@ -6,6 +6,8 @@
 -- You should have received a copy of the license along with this
 -- work. If not, see <https://creativecommons.org/licenses/by-nc-sa/4.0/>.
 
+local inspect = include "lib.inspect"
+
 local mod = require "lib.MeleeWeaponApi.mod" ---@class MeleeWeaponApiModReference
 
 local Util = mod.__Api and mod.__Api.Util or include "lib.MeleeWeaponApi.Util.init"
@@ -19,7 +21,7 @@ mod.__EntityMelee = EntityMelee
 ---@param direction?    Direction|Vector    Direction of the swing, if different from the weapon's current rotation
 ---@param force?        boolean             Override previously playing animation — Default: `false`
 function EntityMelee:Swing(animation, direction, force)
-    dprint "[EntityMelee:Swing()] Initiatited"
+    dprint "[EntityMelee:Swing()] Init"
     if not force and not self:OnSwingStart() then
         dprint "[EntityMelee:Swing()] Denied"
         return
@@ -40,12 +42,15 @@ function EntityMelee:Swing(animation, direction, force)
     })
 
     direction = EvalDirection()
+    dprint("[EntityMelee:Swing()] Direction: " .. inspect { X = direction.X, Y = direction.Y })
+    dprint("[EntityMelee:Swing()] Angle: " .. direction:GetAngleDegrees())
 
     local state = self:GetState()
     local sprite = self:GetSprite()
 
     state.IsSwinging = true
     state.CurrentAnimation = animation
+    dprint("[EntityMelee:Swing()] Updated state: " .. inspect(state))
 
     sprite.Rotation = self.AimRotationOffset + direction:GetAngleDegrees()
     sprite:Play(animation, true)

@@ -44,6 +44,7 @@ end
 
 ---@type ModCallbackModule
 return {
+    force = true,
     {
         key = Callbacks.MC_POST_WEAPON_UPDATE,
         fn = TriggerOnSwing,

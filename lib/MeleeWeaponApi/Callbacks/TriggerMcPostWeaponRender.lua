@@ -22,6 +22,7 @@ end
 
 ---@type ModCallbackModule
 return {
+    force = true,
     {
         key = ModCallbacks.MC_POST_EFFECT_RENDER,
         fn = TriggerMcPostWeaponRender,
