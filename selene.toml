@@ -3,3 +3,4 @@ std = "isaac+krieg"
 [lints]
 multiple_statements = "allow"
 mixed_table = "allow"
+shadowing = "allow"
