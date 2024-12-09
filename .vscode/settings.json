@@ -19,5 +19,6 @@
     },
     "Lua.runtime.special": {
         "LoadModule": "require"
-    }
+    },
+    "explorer.sortOrderLexicographicOptions": "lower"
 }
