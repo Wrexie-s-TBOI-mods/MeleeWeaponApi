@@ -132,18 +132,23 @@ Starts with **Buzzaxe** as pocket active item.
 - [ ] EntityMelee
   - [ ] Smooth rotation
   - [ ] Swing
-    - [ ] Animate
+    - [x] Animate
     - [ ] Swing direction
-    - [x] `OnSwingStart`
-    - [x] `OnSwingHit`
-    - [x] `OnSwingEnd`
-  - [ ] Charge
+    - [x] Swing target discriminator
+    - [ ] Custom hitboxes ?
+    - [x] Callbacks
+      - [x] `OnSwingStart`
+      - [x] `OnSwingHit`
+      - [x] `OnSwingEnd`
+  - [x] Charge
     - [x] Chargebar
     - [x] Callbacks
-      - [ ] `OnChargeStart`
+      - [x] `GetChargebarPosition`
+      - [x] `OnChargeStart`
       - [x] `OnChargeUpdate`
       - [x] `OnChargeFull`
-      - [ ] `OnChargeEnd`
+      - [x] `OnChargeEnd`
+      - [x] `OnChargeRelease`
   - [ ] Throw
     - [ ] Throw types
       - [ ] None
@@ -153,6 +158,16 @@ Starts with **Buzzaxe** as pocket active item.
     - [ ] `OnThrowStart`
     - [ ] `OnThrowHit`
     - [ ] `OnThrowEnd`
+  - [ ] Player input
+    - [ ] `IsPlayerAiming`
+    - [ ] `IsPlayerMoving`
+    - [ ] Callbacks
+      - [ ] `OnPlayerMoveStart`
+      - [ ] `OnPlayerMoveUpdate`
+      - [ ] `OnPlayerMoveEnd`
+      - [ ] `OnPlayerAimStart`
+      - [ ] `OnPlayerAimUpdate`
+      - [ ] `OnPlayerAimEnd`
 
 ---
 
