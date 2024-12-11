@@ -1,4 +1,4 @@
--- BL2 Krieg - TBOI: Repentance character mod (c) by Wrexes
+-- BL2 Krieg - TBOI: Repentance character mod (c) by Sir Wrexes
 --
 -- BL2 Krieg - TBOI: Repentance character mod is licensed under a
 -- Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License.

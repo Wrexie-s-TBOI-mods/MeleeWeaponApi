@@ -1,4 +1,4 @@
--- BL2 Krieg - TBOI: Repentance character mod (c) by Wrexes
+-- BL2 Krieg - TBOI: Repentance character mod (c) by Sir Wrexes
 --
 -- BL2 Krieg - TBOI: Repentance character mod is licensed under a
 -- Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License.
@@ -19,15 +19,17 @@ function Buzzaxe:CreateBuzzaxe(player)
     local state = self.state[player]
 
     local axe = MeleeWeaponApi:Create { Spawner = player, Variant = self.Constants.BUZZAXE_ITEM_EFFECT_VARIANT }
-
-    axe.DepthOffset = player.DepthOffset + 1
-
-    axe.Capsules = { "tip" }
-    axe.CustomData.Clock = Util.Clock(30)
-    axe.CustomData.Animations = {
-        Swing = IterableList { "Swing", "Swing2" },
-        SwingDown = IterableList { "SwingDown", "SwingDown2" },
+    local custom = {
+        Clock = Util.Clock(30),
+        Animations = {
+            Swing = IterableList { "Swing", "Swing2" },
+            SwingDown = IterableList { "SwingDown", "SwingDown2" },
+        },
     }
+
+    axe.CustomData = custom
+    axe.DepthOffset = player.DepthOffset + 1
+    axe.Capsules = { "AxeHit", "WooshHit" }
 
     function axe:OnSwingHit(target)
         if not target:IsVulnerableEnemy() or not target:IsActiveEnemy() then return end

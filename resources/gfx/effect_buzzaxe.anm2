@@ -1,5 +1,5 @@
 <AnimatedActor>
-	<Info CreatedBy="Unknown" CreatedOn="19/11/2024 15:38:53" Version="1" Fps="30"/>
+	<Info CreatedBy="Not Wrexes" CreatedOn="11/12/2024 13:23:37" Version="10" Fps="30"/>
 	<Content>
 		<Spritesheets>
 			<Spritesheet Path="effects\effect_buzzaxe.png" Id="0"/>
@@ -10,6 +10,8 @@
 		</Layers>
 		<Nulls>
 			<Null Name="tip" Id="0" ShowRect="true"/>
+			<Null Name="AxeHit" Id="1" ShowRect="false"/>
+			<Null Name="WooshHit" Id="2" ShowRect="false"/>
 		</Nulls>
 		<Events/>
 	</Content>
@@ -28,6 +30,8 @@
 				<NullAnimation NullId="0" Visible="true">
 					<Frame XPosition="-20" YPosition="0" XScale="100" YScale="100" Delay="1" Visible="true" RedTint="255" GreenTint="255" BlueTint="255" AlphaTint="255" RedOffset="0" GreenOffset="0" BlueOffset="0" Rotation="0" Interpolated="false"/>
 				</NullAnimation>
+				<NullAnimation NullId="1" Visible="true"/>
+				<NullAnimation NullId="2" Visible="true"/>
 			</NullAnimations>
 			<Triggers/>
 		</Animation>
@@ -52,6 +56,8 @@
 				<NullAnimation NullId="0" Visible="true">
 					<Frame XPosition="0" YPosition="0" XScale="100" YScale="100" Delay="1" Visible="true" RedTint="255" GreenTint="255" BlueTint="255" AlphaTint="255" RedOffset="0" GreenOffset="0" BlueOffset="0" Rotation="0" Interpolated="false"/>
 				</NullAnimation>
+				<NullAnimation NullId="1" Visible="true"/>
+				<NullAnimation NullId="2" Visible="true"/>
 			</NullAnimations>
 			<Triggers/>
 		</Animation>
@@ -90,6 +96,20 @@
 					<Frame XPosition="0" YPosition="20" XScale="100" YScale="100" Delay="1" Visible="true" RedTint="255" GreenTint="255" BlueTint="255" AlphaTint="255" RedOffset="0" GreenOffset="0" BlueOffset="0" Rotation="0" Interpolated="false"/>
 					<Frame XPosition="14" YPosition="14" XScale="100" YScale="100" Delay="1" Visible="true" RedTint="255" GreenTint="255" BlueTint="255" AlphaTint="255" RedOffset="0" GreenOffset="0" BlueOffset="0" Rotation="0" Interpolated="false"/>
 					<Frame XPosition="20" YPosition="0" XScale="100" YScale="100" Delay="5" Visible="true" RedTint="255" GreenTint="255" BlueTint="255" AlphaTint="255" RedOffset="0" GreenOffset="0" BlueOffset="0" Rotation="0" Interpolated="false"/>
+				</NullAnimation>
+				<NullAnimation NullId="1" Visible="true">
+					<Frame XPosition="-16" YPosition="-3" XScale="238.662857055664" YScale="200.581420898438" Delay="1" Visible="true" RedTint="255" GreenTint="255" BlueTint="255" AlphaTint="255" RedOffset="0" GreenOffset="0" BlueOffset="0" Rotation="9.30232429504395" Interpolated="true"/>
+					<Frame XPosition="-14" YPosition="9" XScale="238.662857055664" YScale="200.581420898438" Delay="1" Visible="true" RedTint="255" GreenTint="255" BlueTint="255" AlphaTint="255" RedOffset="0" GreenOffset="0" BlueOffset="0" Rotation="-33.4302253723145" Interpolated="true"/>
+					<Frame XPosition="-4" YPosition="17" XScale="238.662857055664" YScale="200.581420898438" Delay="1" Visible="true" RedTint="255" GreenTint="255" BlueTint="255" AlphaTint="255" RedOffset="0" GreenOffset="0" BlueOffset="0" Rotation="-79.6511535644531" Interpolated="true"/>
+					<Frame XPosition="10" YPosition="15" XScale="238.662857055664" YScale="200.581420898438" Delay="1" Visible="true" RedTint="255" GreenTint="255" BlueTint="255" AlphaTint="255" RedOffset="0" GreenOffset="0" BlueOffset="0" Rotation="-127.034866333008" Interpolated="true"/>
+					<Frame XPosition="15" YPosition="-2" XScale="238.662857055664" YScale="200.581420898438" Delay="1" Visible="true" RedTint="255" GreenTint="255" BlueTint="255" AlphaTint="255" RedOffset="0" GreenOffset="0" BlueOffset="0" Rotation="-190.691299438477" Interpolated="true"/>
+					<Frame XPosition="16" YPosition="2" XScale="238.662857055664" YScale="200.581420898438" Delay="1" Visible="true" RedTint="255" GreenTint="255" BlueTint="255" AlphaTint="255" RedOffset="0" GreenOffset="0" BlueOffset="0" Rotation="-179.360443115234" Interpolated="true"/>
+				</NullAnimation>
+				<NullAnimation NullId="2" Visible="true">
+					<Frame XPosition="0" YPosition="0" XScale="0" YScale="0" Delay="3" Visible="true" RedTint="255" GreenTint="255" BlueTint="255" AlphaTint="255" RedOffset="0" GreenOffset="0" BlueOffset="0" Rotation="0" Interpolated="false"/>
+					<Frame XPosition="0" YPosition="13" XScale="423.454650878906" YScale="313.454559326172" Delay="1" Visible="true" RedTint="255" GreenTint="255" BlueTint="255" AlphaTint="255" RedOffset="0" GreenOffset="0" BlueOffset="0" Rotation="0" Interpolated="true"/>
+					<Frame XPosition="0" YPosition="15" XScale="423.454650878906" YScale="313.454559326172" Delay="1" Visible="true" RedTint="255" GreenTint="255" BlueTint="255" AlphaTint="255" RedOffset="0" GreenOffset="0" BlueOffset="0" Rotation="0" Interpolated="true"/>
+					<Frame XPosition="0" YPosition="25" XScale="423.454650878906" YScale="313.454559326172" Delay="4" Visible="true" RedTint="255" GreenTint="255" BlueTint="255" AlphaTint="255" RedOffset="0" GreenOffset="0" BlueOffset="0" Rotation="0" Interpolated="true"/>
 				</NullAnimation>
 			</NullAnimations>
 			<Triggers/>
@@ -130,6 +150,20 @@
 					<Frame XPosition="-14" YPosition="14" XScale="100" YScale="100" Delay="1" Visible="true" RedTint="255" GreenTint="255" BlueTint="255" AlphaTint="255" RedOffset="0" GreenOffset="0" BlueOffset="0" Rotation="0" Interpolated="false"/>
 					<Frame XPosition="-20" YPosition="0" XScale="100" YScale="100" Delay="5" Visible="true" RedTint="255" GreenTint="255" BlueTint="255" AlphaTint="255" RedOffset="0" GreenOffset="0" BlueOffset="0" Rotation="0" Interpolated="false"/>
 				</NullAnimation>
+				<NullAnimation NullId="1" Visible="true">
+					<Frame XPosition="16" YPosition="3" XScale="238.662857055664" YScale="200.581420898438" Delay="1" Visible="true" RedTint="255" GreenTint="255" BlueTint="255" AlphaTint="255" RedOffset="0" GreenOffset="0" BlueOffset="0" Rotation="-170.110443115234" Interpolated="true"/>
+					<Frame XPosition="8" YPosition="13" XScale="238.662857055664" YScale="200.581420898438" Delay="1" Visible="true" RedTint="255" GreenTint="255" BlueTint="255" AlphaTint="255" RedOffset="0" GreenOffset="0" BlueOffset="0" Rotation="-122.941299438477" Interpolated="true"/>
+					<Frame XPosition="-4" YPosition="14" XScale="238.662857055664" YScale="200.581420898438" Delay="1" Visible="true" RedTint="255" GreenTint="255" BlueTint="255" AlphaTint="255" RedOffset="0" GreenOffset="0" BlueOffset="0" Rotation="-76.5348663330078" Interpolated="true"/>
+					<Frame XPosition="-14" YPosition="8" XScale="238.662857055664" YScale="200.581420898438" Delay="1" Visible="true" RedTint="255" GreenTint="255" BlueTint="255" AlphaTint="255" RedOffset="0" GreenOffset="0" BlueOffset="0" Rotation="-27.1511535644531" Interpolated="true"/>
+					<Frame XPosition="-11" YPosition="0" XScale="238.662857055664" YScale="200.581420898438" Delay="1" Visible="true" RedTint="255" GreenTint="255" BlueTint="255" AlphaTint="255" RedOffset="0" GreenOffset="0" BlueOffset="0" Rotation="7.31977462768555" Interpolated="true"/>
+					<Frame XPosition="-16" YPosition="-3" XScale="238.662857055664" YScale="200.581420898438" Delay="1" Visible="true" RedTint="255" GreenTint="255" BlueTint="255" AlphaTint="255" RedOffset="0" GreenOffset="0" BlueOffset="0" Rotation="9.30232429504395" Interpolated="true"/>
+				</NullAnimation>
+				<NullAnimation NullId="2" Visible="true">
+					<Frame XPosition="0" YPosition="0" XScale="0" YScale="0" Delay="3" Visible="true" RedTint="255" GreenTint="255" BlueTint="255" AlphaTint="255" RedOffset="0" GreenOffset="0" BlueOffset="0" Rotation="0" Interpolated="false"/>
+					<Frame XPosition="0" YPosition="13" XScale="423.454650878906" YScale="313.454559326172" Delay="1" Visible="true" RedTint="255" GreenTint="255" BlueTint="255" AlphaTint="255" RedOffset="0" GreenOffset="0" BlueOffset="0" Rotation="0" Interpolated="true"/>
+					<Frame XPosition="0" YPosition="15" XScale="423.454650878906" YScale="313.454559326172" Delay="1" Visible="true" RedTint="255" GreenTint="255" BlueTint="255" AlphaTint="255" RedOffset="0" GreenOffset="0" BlueOffset="0" Rotation="0" Interpolated="true"/>
+					<Frame XPosition="0" YPosition="25" XScale="423.454650878906" YScale="313.454559326172" Delay="4" Visible="true" RedTint="255" GreenTint="255" BlueTint="255" AlphaTint="255" RedOffset="0" GreenOffset="0" BlueOffset="0" Rotation="0" Interpolated="true"/>
+				</NullAnimation>
 			</NullAnimations>
 			<Triggers/>
 		</Animation>
@@ -169,6 +203,19 @@
 					<Frame XPosition="-14" YPosition="14" XScale="100" YScale="100" Delay="1" Visible="true" RedTint="255" GreenTint="255" BlueTint="255" AlphaTint="255" RedOffset="0" GreenOffset="0" BlueOffset="0" Rotation="0" Interpolated="false"/>
 					<Frame XPosition="-20" YPosition="0" XScale="100" YScale="100" Delay="5" Visible="true" RedTint="255" GreenTint="255" BlueTint="255" AlphaTint="255" RedOffset="0" GreenOffset="0" BlueOffset="0" Rotation="0" Interpolated="false"/>
 				</NullAnimation>
+				<NullAnimation NullId="1" Visible="true">
+					<Frame XPosition="15" YPosition="3" XScale="238.662857055664" YScale="200.581420898438" Delay="1" Visible="true" RedTint="255" GreenTint="255" BlueTint="255" AlphaTint="255" RedOffset="0" GreenOffset="0" BlueOffset="0" Rotation="-174.610443115234" Interpolated="true"/>
+					<Frame XPosition="8" YPosition="14" XScale="238.662857055664" YScale="200.581420898438" Delay="1" Visible="true" RedTint="255" GreenTint="255" BlueTint="255" AlphaTint="255" RedOffset="0" GreenOffset="0" BlueOffset="0" Rotation="-121.691299438477" Interpolated="true"/>
+					<Frame XPosition="-4" YPosition="14" XScale="238.662857055664" YScale="200.581420898438" Delay="1" Visible="true" RedTint="255" GreenTint="255" BlueTint="255" AlphaTint="255" RedOffset="0" GreenOffset="0" BlueOffset="0" Rotation="-77.2848663330078" Interpolated="true"/>
+					<Frame XPosition="-14" YPosition="8" XScale="238.662857055664" YScale="200.581420898438" Delay="1" Visible="true" RedTint="255" GreenTint="255" BlueTint="255" AlphaTint="255" RedOffset="0" GreenOffset="0" BlueOffset="0" Rotation="-30.9011535644531" Interpolated="true"/>
+					<Frame XPosition="-16" YPosition="-3" XScale="238.662857055664" YScale="200.581420898438" Delay="1" Visible="true" RedTint="255" GreenTint="255" BlueTint="255" AlphaTint="255" RedOffset="0" GreenOffset="0" BlueOffset="0" Rotation="10.5697746276855" Interpolated="true"/>
+				</NullAnimation>
+				<NullAnimation NullId="2" Visible="true">
+					<Frame XPosition="0" YPosition="0" XScale="0" YScale="0" Delay="3" Visible="true" RedTint="255" GreenTint="255" BlueTint="255" AlphaTint="255" RedOffset="0" GreenOffset="0" BlueOffset="0" Rotation="0" Interpolated="false"/>
+					<Frame XPosition="0" YPosition="13" XScale="423.454650878906" YScale="313.454559326172" Delay="1" Visible="true" RedTint="255" GreenTint="255" BlueTint="255" AlphaTint="255" RedOffset="0" GreenOffset="0" BlueOffset="0" Rotation="0" Interpolated="true"/>
+					<Frame XPosition="0" YPosition="15" XScale="423.454650878906" YScale="313.454559326172" Delay="1" Visible="true" RedTint="255" GreenTint="255" BlueTint="255" AlphaTint="255" RedOffset="0" GreenOffset="0" BlueOffset="0" Rotation="0" Interpolated="true"/>
+					<Frame XPosition="0" YPosition="25" XScale="423.454650878906" YScale="313.454559326172" Delay="4" Visible="true" RedTint="255" GreenTint="255" BlueTint="255" AlphaTint="255" RedOffset="0" GreenOffset="0" BlueOffset="0" Rotation="0" Interpolated="true"/>
+				</NullAnimation>
 			</NullAnimations>
 			<Triggers/>
 		</Animation>
@@ -207,6 +254,20 @@
 					<Frame XPosition="0" YPosition="20" XScale="100" YScale="100" Delay="1" Visible="true" RedTint="255" GreenTint="255" BlueTint="255" AlphaTint="255" RedOffset="0" GreenOffset="0" BlueOffset="0" Rotation="0" Interpolated="false"/>
 					<Frame XPosition="14" YPosition="14" XScale="100" YScale="100" Delay="1" Visible="true" RedTint="255" GreenTint="255" BlueTint="255" AlphaTint="255" RedOffset="0" GreenOffset="0" BlueOffset="0" Rotation="0" Interpolated="false"/>
 					<Frame XPosition="20" YPosition="0" XScale="100" YScale="100" Delay="5" Visible="true" RedTint="255" GreenTint="255" BlueTint="255" AlphaTint="255" RedOffset="0" GreenOffset="0" BlueOffset="0" Rotation="0" Interpolated="false"/>
+				</NullAnimation>
+				<NullAnimation NullId="1" Visible="true">
+					<Frame XPosition="-16" YPosition="-3" XScale="238.662857055664" YScale="200.581420898438" Delay="1" Visible="true" RedTint="255" GreenTint="255" BlueTint="255" AlphaTint="255" RedOffset="0" GreenOffset="0" BlueOffset="0" Rotation="9.30232429504395" Interpolated="true"/>
+					<Frame XPosition="-14" YPosition="9" XScale="238.662857055664" YScale="200.581420898438" Delay="1" Visible="true" RedTint="255" GreenTint="255" BlueTint="255" AlphaTint="255" RedOffset="0" GreenOffset="0" BlueOffset="0" Rotation="-33.4302253723145" Interpolated="true"/>
+					<Frame XPosition="-4" YPosition="17" XScale="238.662857055664" YScale="200.581420898438" Delay="1" Visible="true" RedTint="255" GreenTint="255" BlueTint="255" AlphaTint="255" RedOffset="0" GreenOffset="0" BlueOffset="0" Rotation="-79.6511535644531" Interpolated="true"/>
+					<Frame XPosition="10" YPosition="15" XScale="238.662857055664" YScale="200.581420898438" Delay="1" Visible="true" RedTint="255" GreenTint="255" BlueTint="255" AlphaTint="255" RedOffset="0" GreenOffset="0" BlueOffset="0" Rotation="-127.034866333008" Interpolated="true"/>
+					<Frame XPosition="15" YPosition="-2" XScale="238.662857055664" YScale="200.581420898438" Delay="1" Visible="true" RedTint="255" GreenTint="255" BlueTint="255" AlphaTint="255" RedOffset="0" GreenOffset="0" BlueOffset="0" Rotation="-190.691299438477" Interpolated="true"/>
+					<Frame XPosition="16" YPosition="2" XScale="238.662857055664" YScale="200.581420898438" Delay="1" Visible="true" RedTint="255" GreenTint="255" BlueTint="255" AlphaTint="255" RedOffset="0" GreenOffset="0" BlueOffset="0" Rotation="-179.360443115234" Interpolated="true"/>
+				</NullAnimation>
+				<NullAnimation NullId="2" Visible="true">
+					<Frame XPosition="0" YPosition="0" XScale="0" YScale="0" Delay="3" Visible="true" RedTint="255" GreenTint="255" BlueTint="255" AlphaTint="255" RedOffset="0" GreenOffset="0" BlueOffset="0" Rotation="0" Interpolated="false"/>
+					<Frame XPosition="0" YPosition="13" XScale="423.454650878906" YScale="313.454559326172" Delay="1" Visible="true" RedTint="255" GreenTint="255" BlueTint="255" AlphaTint="255" RedOffset="0" GreenOffset="0" BlueOffset="0" Rotation="0" Interpolated="true"/>
+					<Frame XPosition="0" YPosition="15" XScale="423.454650878906" YScale="313.454559326172" Delay="1" Visible="true" RedTint="255" GreenTint="255" BlueTint="255" AlphaTint="255" RedOffset="0" GreenOffset="0" BlueOffset="0" Rotation="0" Interpolated="true"/>
+					<Frame XPosition="0" YPosition="25" XScale="423.454650878906" YScale="313.454559326172" Delay="4" Visible="true" RedTint="255" GreenTint="255" BlueTint="255" AlphaTint="255" RedOffset="0" GreenOffset="0" BlueOffset="0" Rotation="0" Interpolated="true"/>
 				</NullAnimation>
 			</NullAnimations>
 			<Triggers/>
