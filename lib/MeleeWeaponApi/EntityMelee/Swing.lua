@@ -21,11 +21,7 @@ mod.__EntityMelee = EntityMelee
 ---@param direction?    Direction|Vector    Direction of the swing, if different from the weapon's current rotation
 ---@param force?        boolean             Override previously playing animation — Default: `false`
 function EntityMelee:Swing(animation, direction, force)
-    dprint "[EntityMelee:Swing()] Init"
-    if not force and self:OnSwingStart() then
-        dprint "[EntityMelee:Swing()] Denied"
-        return
-    end
+    if not force and self:OnSwingStart() then return end
 
     direction = Util.WhenEval(type(direction), {
         ["nil"] = function()
@@ -40,15 +36,11 @@ function EntityMelee:Swing(animation, direction, force)
         end,
     }, Util.DirectionToAngleVector)
 
-    dprint("[EntityMelee:Swing()] Direction: " .. inspect { X = direction.X, Y = direction.Y })
-    dprint("[EntityMelee:Swing()] Angle: " .. direction:GetAngleDegrees())
-
     local state = self:GetState()
     local sprite = self:GetSprite()
 
     state.IsSwinging = true
     state.CurrentAnimation = animation
-    dprint("[EntityMelee:Swing()] Updated state: " .. inspect(state))
 
     sprite.Rotation = self.AimRotationOffset + direction:GetAngleDegrees()
     sprite:Play(animation, true)

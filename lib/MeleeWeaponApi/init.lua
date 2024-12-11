@@ -27,14 +27,6 @@ local MWADebug = {
 
 Api.DEBUG = MWADebug.Nope ---@type MWADebug
 
---[[Though it might be tempting to sort these alphabetically (I'm looking at you, future Wrexes),
-    don't do it. It might break things. I'm not entirely sure. Maybe I should...
-    NO. RESIST THE TEMPTATION.
-    ]]
-include "lib.MeleeWeaponApi.Util.init"
-include "lib.MeleeWeaponApi.EntityMelee.init"
-include "lib.MeleeWeaponApi.Callbacks.init"
-
 _G.MeleeWeaponApi = Api
 
 --[[Print stuff to the console but only in debug mode.
@@ -44,5 +36,13 @@ function _G.dprint(...)
     if Api.DEBUG == MWADebug.Yep then print(...) end
     if Api.DEBUG == MWADebug.Cleanup then error("CLEANUP YOUR DEBUG PRINTS, DUMMY.", 1) end
 end
+
+--[[Though it might be tempting to sort these alphabetically (I'm looking at you, future Wrexes),
+    don't do it. It might break things. I'm not entirely sure. Maybe I should...
+    NO. RESIST THE TEMPTATION.
+    ]]
+include "lib.MeleeWeaponApi.Util.init"
+include "lib.MeleeWeaponApi.EntityMelee.init"
+include "lib.MeleeWeaponApi.Callbacks.init"
 
 return Api

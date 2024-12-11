@@ -101,14 +101,32 @@ function INITIAL_PROPS:OnSwingEnd() end
     Be sure to set your `EntityMelee.Capsules` for this to work properly, else it will not be called !  
     Returning a falsy value will prevent the entity from being hit again by the same swing.
     ]]
---- @param target Entity
+---@param target Entity
 function INITIAL_PROPS:OnSwingHit(target) end
 
 --]]
 --[[ MOVEMENT CALLBAKCS ]]
 
---[[Called when 
+--[[Called when player starts moving.
     ]]
+---@param player    EntityPlayer
+---@param movement  Vector
+---@param input     Vector
+function INITIAL_PROPS:OnPlayerMoveStart(player, movement, input) end
+
+--[[Called on every tick of player moving.
+    ]]
+---@param player    EntityPlayer
+---@param movement  Vector
+---@param input     Vector
+function INITIAL_PROPS:OnPlayerMoveUpdate(player, movement, input) end
+
+--[[Called on every tick of player moving.
+]]
+---@param player    EntityPlayer
+---@param movement  Vector
+---@param input     Vector
+function INITIAL_PROPS:OnPlayerMoveEnd(player, movement, input) end
 
 --]]
 

@@ -8,7 +8,7 @@
 
 local mod = require "lib.MeleeWeaponApi.mod"
 
-local Callbacks = mod.__Api.Callbacks or include "lib.MeleeWeaponApi.Callbacks.CallbackId"
+local Callbacks = mod.__Api and mod.__Api.Callbacks or include "lib.MeleeWeaponApi.Callbacks.CallbackId"
 local RegistryManager = mod.__RegistryManager or include "lib.MeleeWeaponApi.RegistryManager"
 
 ---@param _mod      MeleeWeaponApiModReference

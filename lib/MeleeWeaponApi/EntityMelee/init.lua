@@ -8,7 +8,8 @@
 
 local mod = require "lib.MeleeWeaponApi.mod" ---@class MeleeWeaponApiModReference
 
-local RegistryManager = include "lib.MeleeWeaponApi.RegistryManager"
+local RegistryManager = mod.__RegistryManager or include "lib.MeleeWeaponApi.RegistryManager"
+local CallbackManager = mod.__CallbackManager or include "lib.MeleeWeaponApi.Callbacks.init"
 
 ---@class EntityMelee
 local EntityMelee = mod.__EntityMelee or {}
@@ -73,6 +74,7 @@ end
 function EntityMelee:Remove()
     self:__fxcall "Remove"
     RegistryManager.Remove(self)
+    CallbackManager:RemoveEntries(self)
     return nil
 end
 

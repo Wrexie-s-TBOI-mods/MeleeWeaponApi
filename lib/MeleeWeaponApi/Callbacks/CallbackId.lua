@@ -9,7 +9,7 @@
 local mod = require "lib.MeleeWeaponApi.mod"
 local Api = mod.__Api or include "lib.MeleeWeaponApi.Api" ---@class MeleeWeaponApi
 
-local Callbacks = {}
+local Callbacks = Api.Callbacks or {}
 Api.Callbacks = Callbacks
 
 local PREFIX = "WREX.MeleeWeaponApi."

@@ -9,8 +9,8 @@
 local mod = require "lib.MeleeWeaponApi.mod" ---@class MeleeWeaponApiModReference
 
 local Api = mod.__Api or {}
-local CustomCallbacks = mod.__CustomCallbacks or include "lib.MeleeWeaponApi.Callbacks.CallbackId"
-
-Api.Callbacks = CustomCallbacks
+Api.Callbacks = mod.__Api.Callbacks or include "lib.MeleeWeaponApi.Callbacks.CallbackId"
 
 include "lib.MeleeWeaponApi.Callbacks.init"
+
+return Api.Callbacks
