@@ -22,13 +22,12 @@ mod.__EntityMelee = EntityMelee
 ---@param force?        boolean             Override previously playing animation — Default: `false`
 function EntityMelee:Swing(animation, direction, force)
     dprint "[EntityMelee:Swing()] Init"
-    if not force and not self:OnSwingStart() then
+    if not force and self:OnSwingStart() then
         dprint "[EntityMelee:Swing()] Denied"
         return
     end
 
-    ---@type fun(): Vector
-    local EvalDirection = Util.When(type(direction), {
+    direction = Util.WhenEval(type(direction), {
         ["nil"] = function()
             return Vector.FromAngle(self:GetSprite().Rotation)
         end,
@@ -39,9 +38,8 @@ function EntityMelee:Swing(animation, direction, force)
             assert(Util.InstanceOfIsaacApiClass(direction, Vector), "Given direction is `userdata` but not a Vector.")
             return direction
         end,
-    })
+    }, Util.DirectionToAngleVector)
 
-    direction = EvalDirection()
     dprint("[EntityMelee:Swing()] Direction: " .. inspect { X = direction.X, Y = direction.Y })
     dprint("[EntityMelee:Swing()] Angle: " .. direction:GetAngleDegrees())
 

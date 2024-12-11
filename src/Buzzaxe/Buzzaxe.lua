@@ -40,9 +40,9 @@ function Buzzaxe:CreateBuzzaxe(player)
     end
 
     function axe:OnSwingStart()
-        if self:IsSwinging() then return false end
+        if self:IsSwinging() then return true end
+
         SFXManager():Play(SoundEffect.SOUND_SWORD_SPIN)
-        return true
     end
 
     function axe:OnSwingEnd()

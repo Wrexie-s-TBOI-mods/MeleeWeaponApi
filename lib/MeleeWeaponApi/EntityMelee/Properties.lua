@@ -14,14 +14,6 @@ local Util = mod.__Api and mod.__Api.Util or include "lib.MeleeWeaponApi.Util.in
 local EntityMelee = mod.__EntityMelee or {}
 mod.__EntityMelee = EntityMelee
 
-local ANY_ENTITY_PARTITION = EntityPartition.BULLET
-    | EntityPartition.EFFECT
-    | EntityPartition.ENEMY
-    | EntityPartition.FAMILIAR
-    | EntityPartition.PICKUP
-    | EntityPartition.PLAYER
-    | EntityPartition.TEAR
-
 ---@class MeleeWeaponProps
 local INITIAL_PROPS = {
     AimRotationOffset = 0,
@@ -37,7 +29,7 @@ local INITIAL_PROPS = {
         ]]
     Capsules = {}, ---@type string[]
 
-    SwingTargets = ANY_ENTITY_PARTITION, ---@type EntityPartition
+    SwingTargets = nil, ---@type EntityPartition
 
     --[[This field is to store any arbitrary data of your choice.
         ]]
@@ -62,12 +54,10 @@ end
 
 --[[ CHARGE CALLBACKS ]]
 
---[[Called before starting a charge.
-    Returning a falsy value prevents charging.
+--[[Called before starting a charge.  
+    Returning a truthy value prevents charging.
     ]]
-function INITIAL_PROPS:OnChargeStart()
-    return true
-end
+function INITIAL_PROPS:OnChargeStart() end
 
 --[[Called on every update of an `EntityMelee`, if it is charging.
     ]]
@@ -78,11 +68,9 @@ function INITIAL_PROPS:OnChargeUpdate() end
 function INITIAL_PROPS:OnChargeFull() end
 
 --[[Called before releasing a charge.
-    Returning a falsy value prevents charge from stopping.
+    Returning a truthy value prevents charge from stopping.
     ]]
-function INITIAL_PROPS:OnChargeEnd()
-    return true
-end
+function INITIAL_PROPS:OnChargeEnd() end
 
 --[[Called after releasing a charge.
     ]]
@@ -92,37 +80,33 @@ function INITIAL_PROPS:OnChargeRelease() end
 --[[ SWING CALLBACKS ]]
 
 --[[Called before each swing.
-    If a falsy value is returned, prevents the swing.  
+    If a truthy value is returned, prevents the swing.  
     By default, checks that it's not already swinging and,
     if spawner entity is a player, checks that they can shoot.
     ]]
 function INITIAL_PROPS:OnSwingStart()
-    dprint "[EntityMelee#OnSwingStart] Init"
-    if self:IsSwinging() then return false end
+    if self:IsSwinging() then return true end
 
     local player = self.SpawnerEntity:ToPlayer()
-    dprint("[EntityMelee#OnSwingStart] SpawnerEntity is " .. (not player and "*not* " or "") .. "a player.")
-
-    if player and player:CanShoot() then
-        dprint "[EntityMelee#OnSwingStart] SpawnerEntity can shoot."
-        return true
-    end
+    if not player or not player:CanShoot() then return true end
 end
 
 --[[Called after each swing.
     ]]
-function INITIAL_PROPS:OnSwingEnd()
-    dprint "[EntityMelee#OnSwingEnd] This should appear"
-end
+function INITIAL_PROPS:OnSwingEnd() end
 
 --[[Called for every entity hit by a swing.  
     Be sure to set your `EntityMelee.Capsules` for this to work properly, else it will not be called !  
-    When this returns `nil`, it will not be called again for the same target of the same swing.
+    Returning a falsy value will prevent the entity from being hit again by the same swing.
     ]]
 --- @param target Entity
-function INITIAL_PROPS:OnSwingHit(target)
-    dprint("[EntityMelee#OnSwingHit] " .. GetPtrHash(target))
-end
+function INITIAL_PROPS:OnSwingHit(target) end
+
+--]]
+--[[ MOVEMENT CALLBAKCS ]]
+
+--[[Called when 
+    ]]
 
 --]]
 
