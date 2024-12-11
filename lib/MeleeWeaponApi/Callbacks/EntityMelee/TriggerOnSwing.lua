@@ -12,9 +12,9 @@ local Callbacks = mod.__Api.Callbacks or include "lib.MeleeWeaponApi.Callbacks.C
 ---@param _mod      MeleeWeaponApiModReference
 ---@param weapon    EntityMelee
 local function TriggerOnSwing(_mod, weapon)
-    if not weapon:IsSwinging() then return end
+    local state = weapon:GetState(true)
+    if not state.IsSwinging then return end
 
-    local state = weapon:GetState()
     local sprite = weapon:GetSprite()
     local blacklist = state.SwingHitBlacklist or {}
 

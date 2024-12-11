@@ -36,7 +36,7 @@ function EntityMelee:Swing(animation, direction, force)
         end,
     }, Util.DirectionToAngleVector)
 
-    local state = self:GetState()
+    local state = self:GetState(true)
     local sprite = self:GetSprite()
 
     state.IsSwinging = true
@@ -44,11 +44,4 @@ function EntityMelee:Swing(animation, direction, force)
 
     sprite.Rotation = self.AimRotationOffset + direction:GetAngleDegrees()
     sprite:Play(animation, true)
-end
-
---[[Check that the weapon is currently swinging.
-    ]]
----@return boolean IsSwinging
-function EntityMelee:IsSwinging()
-    return self:GetState().IsSwinging
 end

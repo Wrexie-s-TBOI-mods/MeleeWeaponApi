@@ -12,7 +12,7 @@ local Callbacks = mod.__Api.Callbacks or include "lib.MeleeWeaponApi.Callbacks.C
 ---@param _mod      MeleeWeaponApiModReference
 ---@param weapon    EntityMelee
 local function RenderChargeBar(_mod, weapon)
-    local state = weapon:GetState()
+    local state = weapon:GetState(true)
     local bar = state.Chargebar
 
     if not bar then return end

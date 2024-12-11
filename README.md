@@ -160,11 +160,11 @@ Starts with **Buzzaxe** as pocket active item.
     - [ ] `OnThrowEnd`
   - [ ] Player input
     - [ ] `IsPlayerAiming`
-    - [ ] `IsPlayerMoving`
+    - [x] `IsPlayerMoving`
     - [ ] Callbacks
-      - [ ] `OnPlayerMoveStart`
-      - [ ] `OnPlayerMoveUpdate`
-      - [ ] `OnPlayerMoveEnd`
+      - [x] `OnPlayerMoveStart`
+      - [x] `OnPlayerMoveUpdate`
+      - [x] `OnPlayerMoveEnd`
       - [ ] `OnPlayerAimStart`
       - [ ] `OnPlayerAimUpdate`
       - [ ] `OnPlayerAimEnd`

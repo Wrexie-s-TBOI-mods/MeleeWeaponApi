@@ -18,7 +18,7 @@ local Callbacks = mod.__Api.Callbacks or include "lib.MeleeWeaponApi.Callbacks.C
 ---@param _mod      MeleeWeaponApiModReference
 ---@param weapon    EntityMelee
 local function TriggerOnCharge(_mod, weapon)
-    if not weapon:IsCharging() then return end
+    if not weapon:GetState(true).IsCharging then return end
 
     if weapon.ChargePercentage < 100 then
         weapon:OnChargeUpdate()

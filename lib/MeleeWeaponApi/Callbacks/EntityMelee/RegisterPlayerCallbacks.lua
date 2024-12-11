@@ -19,7 +19,7 @@ local function TriggerOnPlayerMove(weapon, target)
     return function(_mod, player)
         if GetPtrHash(player) ~= GetPtrHash(target) then return end
 
-        local state = weapon:GetState()
+        local state = weapon:GetState(true)
         local movement = player:GetMovementVector()
         local input = player:GetMovementInput()
 

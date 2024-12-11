@@ -87,7 +87,7 @@ function INITIAL_PROPS:OnChargeRelease() end
     if spawner entity is a player, checks that they can shoot.
     ]]
 function INITIAL_PROPS:OnSwingStart()
-    if self:IsSwinging() then return true end
+    if self:GetState(true).IsSwinging then return true end
 
     local player = self.SpawnerEntity:ToPlayer()
     if not player or not player:CanShoot() then return true end

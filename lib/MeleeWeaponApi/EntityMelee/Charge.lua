@@ -15,7 +15,7 @@ mod.__EntityMelee = EntityMelee
 function EntityMelee:StartCharging()
     if self:OnChargeStart() then return end
 
-    local state = self:GetState()
+    local state = self:GetState(true)
 
     if not state.Chargebar then
         state.Chargebar = Sprite()
@@ -26,9 +26,5 @@ function EntityMelee:StartCharging()
 end
 
 function EntityMelee:StopCharging()
-    if not self:OnChargeEnd() then self:GetState().IsCharging = false end
-end
-
-function EntityMelee:IsCharging()
-    return self:GetState().IsCharging
+    if not self:OnChargeEnd() then self:GetState(true).IsCharging = false end
 end

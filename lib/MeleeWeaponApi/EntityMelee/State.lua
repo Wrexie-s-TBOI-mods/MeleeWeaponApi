@@ -22,6 +22,8 @@ local INITIAL_STATE = {
 
     IsCharging = false, ---@type boolean
     IsThrowing = false, ---@type boolean
+    IsPlayerMoving = false, ---@type boolean
+    IsPlayerAiming = false, ---@type boolean
 
     SwingHitBlacklist = {}, ---@type table<PtrHash, boolean>
 
@@ -42,9 +44,17 @@ function EntityMelee.GetInitialState()
 end
 
 --[[Return the internal state of an @{EntityMelee}.  
-    **DISCLAIMER:** Modifying the returned table can break things and you should
-    only do so if you really know what you are doing.
+    When `unsafe` is set to `true`, will return a reference to the actual state table.  
+    When `unsafe` is set to `false`, will return a *copy* of the state table.  
+    **DISCLAIMER:** Modifying the returned table in unsafe mode can break things and
+    you should only do so if you really know what you are doing.  
+    That said, safe mode iterates over the table to make a copy. If you're not going to
+    edit the table and you care about performance, you should use unsafe mode.
     ]]
-function EntityMelee:GetState()
-    return RegistryManager.GetState(self)
+---@param unsafe? boolean Default: `false`
+function EntityMelee:GetState(unsafe)
+    local state = RegistryManager.GetState(self)
+
+    if unsafe then return state end
+    return Util.Clone(state)
 end
