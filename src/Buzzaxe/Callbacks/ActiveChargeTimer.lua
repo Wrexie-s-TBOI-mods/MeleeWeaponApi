@@ -21,6 +21,9 @@ function ChargeActiveItem(player, force)
         return
     end
 
+    local state = Buzzaxe.state[player]
+    if not state or not state.clock then return end
+
     local slot = assert(Buzzaxe:GetSlot(player))
     local charge = player:GetActiveCharge(slot)
     local clock = Buzzaxe.state[player].clock
