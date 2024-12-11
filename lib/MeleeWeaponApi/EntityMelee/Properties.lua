@@ -29,6 +29,8 @@ local INITIAL_PROPS = {
         ]]
     Capsules = {}, ---@type string[]
 
+    --[[EntityPartitions to filter what type of entity should be considered hit during a swing.
+        ]]
     SwingTargets = nil, ---@type EntityPartition
 
     --[[This field is to store any arbitrary data of your choice.

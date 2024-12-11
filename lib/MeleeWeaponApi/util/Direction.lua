@@ -26,8 +26,8 @@ function Util.DirectionToAngleDegrees(direction)
     })
 end
 
----@param direction Direction
+---@param direction? Direction
 ---@return Vector
 function Util.DirectionToAngleVector(direction)
-    return Vector.FromAngle(Util.DirectionToAngleDegrees(direction))
+    return Vector.FromAngle(Util.DirectionToAngleDegrees(direction or Direction.NO_DIRECTION))
 end
