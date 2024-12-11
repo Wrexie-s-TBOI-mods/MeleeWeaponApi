@@ -18,6 +18,9 @@ Api.Util = Util
 --[[Perform a Switch/Case-like selection.  
     `value` is used to index `cases`.  
     When `value` is `nil`, returns `default`.  
+    **Note:** Type inference on this function is decent, but not perfect.
+    You might want to use things such as [casting](https://luals.github.io/wiki/annotations/#as)
+    the returned value.
     ]]
 ---@generic In, Out, Default
 ---@param value?    In
@@ -32,16 +35,19 @@ end
 --[[Perform a Switch/Case-like selection, like @{Util.When}, but takes a
     table of functions and runs the found matching case to return its result.  
     `value` is used to index `cases`.
-    When `value` is `nil`, returns `default`, or runs and returns its value if
-    it is a function.
+    When `value` is `nil`, returns `default`, or runs it and returns its value if
+    it is a function.  
+    **Note:** Type inference on this function is decent, but not perfect.
+    You might want to use things such as [casting](https://luals.github.io/wiki/annotations/#as)
+    the returned value.
     ]]
 ---@generic In, Out, Default
 ---@param value?    In
 ---@param cases     { [In]: fun(): Out }
----@param default?  Default|fun(): Default
+---@param default?  fun(): Default
 ---@return Out|Default
 function Util.WhenEval(value, cases, default)
     local f = Util.When(value, cases)
-    local v = (f and f()) or (type(default) == "function" and default() or default)
+    local v = (f and f()) or (default and default())
     return v
 end

@@ -1,5 +1,5 @@
 <!--
- BL2 Krieg - TBOI: Repentance character mod (c) by Wrexes
+ BL2 Krieg - TBOI: Repentance character mod (c) by Sir Wrexes
  
  BL2 Krieg - TBOI: Repentance character mod is licensed under a
  Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License.
@@ -11,7 +11,7 @@
 <metadata>
 	<name>Krieg</name>
 	<directory>krieg</directory>
-	<description/>
+	<description />
 	<version>1.0</version>
-	<visibility/>
+	<visibility />
 </metadata>
