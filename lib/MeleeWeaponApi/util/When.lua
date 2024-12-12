@@ -46,7 +46,7 @@ end
 ---@param cases     { [In]: fun(): Out }
 ---@param default?  fun(): Default
 ---@return Out|Default
-function Util.WhenEval(value, cases, default)
+function Util.CallWhen(value, cases, default)
     local f = Util.When(value, cases)
     local v = (f and f()) or (default and default())
     return v

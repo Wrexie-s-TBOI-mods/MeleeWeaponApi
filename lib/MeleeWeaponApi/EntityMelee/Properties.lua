@@ -110,23 +110,17 @@ function INITIAL_PROPS:OnSwingHit(target) end
 --[[Called when player starts moving.
     ]]
 ---@param player    EntityPlayer
----@param movement  Vector
----@param input     Vector
-function INITIAL_PROPS:OnPlayerMoveStart(player, movement, input) end
+function INITIAL_PROPS:OnPlayerMoveStart(player) end
 
 --[[Called on every tick of player moving.
     ]]
 ---@param player    EntityPlayer
----@param movement  Vector
----@param input     Vector
-function INITIAL_PROPS:OnPlayerMoveUpdate(player, movement, input) end
+function INITIAL_PROPS:OnPlayerMoveUpdate(player) end
 
 --[[Called on every tick of player moving.
-]]
----@param player    EntityPlayer
----@param movement  Vector
----@param input     Vector
-function INITIAL_PROPS:OnPlayerMoveEnd(player, movement, input) end
+    ]]
+---@param player EntityPlayer
+function INITIAL_PROPS:OnPlayerMoveEnd(player) end
 
 --]]
 

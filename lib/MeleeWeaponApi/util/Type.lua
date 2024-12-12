@@ -59,7 +59,7 @@ end
 ---| string
 function Util.Type(object)
     local T = type(object)
-    return Util.WhenEval(T, {
+    return Util.CallWhen(T, {
         ["userdata"] = function()
             return Util.GetIsaacApiClassName(object) or "<userdata>"
         end,

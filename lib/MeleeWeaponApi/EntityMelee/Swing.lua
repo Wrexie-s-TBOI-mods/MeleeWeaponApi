@@ -21,7 +21,7 @@ mod.__EntityMelee = EntityMelee
 function EntityMelee:Swing(animation, direction, force)
     if not force and self:OnSwingStart() then return end
 
-    direction = Util.WhenEval(type(direction), {
+    direction = Util.CallWhen(type(direction), {
         ["nil"] = function()
             return Vector.FromAngle(self:GetSprite().Rotation)
         end,
@@ -29,7 +29,10 @@ function EntityMelee:Swing(animation, direction, force)
             return Vector.FromAngle(direction)
         end,
         ["userdata"] = function()
-            assert(Util.InstanceOfIsaacApiClass(direction, Vector), "Given direction is `userdata` but not a Vector.")
+            assert(
+                Util.InstanceOfIsaacApiClass(direction, Vector),
+                "Expected Vector, received " .. Util.GetIsaacApiClassName(direction)
+            )
             return direction
         end,
     }, Util.DirectionToAngleVector)

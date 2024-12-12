@@ -21,23 +21,22 @@ local function TriggerOnPlayerMove(weapon, target)
 
         local state = weapon:GetState(true)
         local movement = player:GetMovementVector()
-        local input = player:GetMovementInput()
 
         if movement.X == 0 and movement.Y == 0 then
             if state.IsPlayerMoving then
                 state.IsPlayerMoving = false
-                weapon:OnPlayerMoveEnd(player, movement, input)
+                weapon:OnPlayerMoveEnd(player)
             end
             return
         end
 
-        Util.WhenEval(state.IsPlayerMoving, {
+        Util.CallWhen(state.IsPlayerMoving, {
             [false] = function()
                 state.IsPlayerMoving = true
-                weapon:OnPlayerMoveStart(player, movement, input)
+                weapon:OnPlayerMoveStart(player)
             end,
             [true] = function()
-                weapon:OnPlayerMoveUpdate(player, movement, input)
+                weapon:OnPlayerMoveUpdate(player)
             end,
         })
     end
