@@ -42,7 +42,7 @@ function Buzzaxe:CreateBuzzaxe(player)
     end
 
     function axe:OnSwingStart()
-        if self:GetState(true).IsCharging then return true end
+        if self:GetState().IsCharging then return true end
 
         SFXManager():Play(SoundEffect.SOUND_SWORD_SPIN)
     end

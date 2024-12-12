@@ -44,17 +44,27 @@ function EntityMelee.GetInitialState()
 end
 
 --[[Return the internal state of an @{EntityMelee}.  
-    When `unsafe` is set to `true`, will return a reference to the actual state table.  
-    When `unsafe` is set to `false`, will return a *copy* of the state table.  
+    When `unsafe` is set to `true`, returns a reference to the actual state table.  
+    When `unsafe` is set to `false`, returns a read-only proxy to the state table.  
     **DISCLAIMER:** Modifying the returned table in unsafe mode can break things and
     you should only do so if you really know what you are doing.  
-    That said, safe mode iterates over the table to make a copy. If you're not going to
-    edit the table and you care about performance, you should use unsafe mode.
     ]]
 ---@param unsafe? boolean Default: `false`
+---@return MeleeWeaponState
 function EntityMelee:GetState(unsafe)
     local state = RegistryManager.GetState(self)
 
-    if unsafe then return state end
-    return Util.Clone(state)
+    return unsafe and state
+        or setmetatable({}, {
+            __index = state,
+            __newindex = function(_, key, value)
+                local msg = "Attempting to edit an EntityMelee state proxy: "
+                    .. Util.Inspect { key = key, value = value }
+                    .. "\n"
+                    .. "If you really want to modify the state (not recommended), pass `true` to :GetState()."
+
+                error(msg, 2)
+            end,
+            __metatable = false,
+        })
 end
