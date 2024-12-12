@@ -19,15 +19,16 @@ mod.__EntityMelee = EntityMelee
 local INITIAL_STATE = {
     IsSwinging = false, ---@type boolean
     CurrentAnimation = nil, ---@type string?
-
-    IsCharging = false, ---@type boolean
-    IsThrowing = false, ---@type boolean
-    IsPlayerMoving = false, ---@type boolean
-    IsPlayerAiming = false, ---@type boolean
-
     SwingHitBlacklist = {}, ---@type table<PtrHash, boolean>
 
+    IsCharging = false, ---@type boolean
     Chargebar = nil, ---@type Sprite
+
+    IsThrowing = false, ---@type boolean
+
+    IsPlayerMoving = false, ---@type boolean
+    IsPlayerAiming = false, ---@type boolean
+    PlayerHeadDirection = Direction.NO_DIRECTION, ---@type Direction
 
     IsRotating = false, ---@type boolean
     RotateFrom = Vector(0, 0),

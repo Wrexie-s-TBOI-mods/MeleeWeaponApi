@@ -15,6 +15,38 @@ local Callbacks = mod.__Api and mod.__Api.Callbacks or include "lib.MeleeWeaponA
 ---@param weapon EntityMelee
 ---@param target EntityPlayer
 ---@return PlayerUpdateCallbackFn
+local function TriggerOnPlayerAim(weapon, target)
+    return function(_mod, player)
+        if GetPtrHash(player) ~= GetPtrHash(target) then return end
+
+        local state = weapon:GetState(true)
+        local aim = player:GetAimDirection()
+
+        state.PlayerHeadDirection = player:GetHeadDirection()
+
+        if aim.X == 0 and aim.Y == 0 then
+            if not state.IsPlayerAiming then return end
+
+            state.IsPlayerAiming = false
+            weapon:OnPlayerAimEnd(player)
+            return
+        end
+
+        Util.CallWhen(state.IsPlayerAiming, {
+            [false] = function()
+                state.IsPlayerAiming = true
+                weapon:OnPlayerAimStart(player)
+            end,
+            [true] = function()
+                weapon:OnPlayerAimUpdate(player)
+            end,
+        })
+    end
+end
+
+---@param weapon EntityMelee
+---@param target EntityPlayer
+---@return PlayerUpdateCallbackFn
 local function TriggerOnPlayerMove(weapon, target)
     return function(_mod, player)
         if GetPtrHash(player) ~= GetPtrHash(target) then return end
@@ -23,10 +55,10 @@ local function TriggerOnPlayerMove(weapon, target)
         local movement = player:GetMovementVector()
 
         if movement.X == 0 and movement.Y == 0 then
-            if state.IsPlayerMoving then
-                state.IsPlayerMoving = false
-                weapon:OnPlayerMoveEnd(player)
-            end
+            if not state.IsPlayerMoving then return end
+
+            weapon:OnPlayerMoveEnd(player)
+            state.IsPlayerMoving = false
             return
         end
 
@@ -50,6 +82,11 @@ local function RegisterPlayerCallbacks(mod, weapon)
 
     mod.__CallbackManager:RegisterEntries(weapon, {
         force = true,
+        {
+            key = ModCallbacks.MC_POST_PLAYER_UPDATE,
+            fn = TriggerOnPlayerAim(weapon, player),
+            param = PlayerVariant.PLAYER,
+        },
         {
             key = ModCallbacks.MC_POST_PLAYER_UPDATE,
             fn = TriggerOnPlayerMove(weapon, player),

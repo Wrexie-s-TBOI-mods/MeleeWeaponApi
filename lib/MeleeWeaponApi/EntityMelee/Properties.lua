@@ -123,6 +123,24 @@ function INITIAL_PROPS:OnPlayerMoveUpdate(player) end
 function INITIAL_PROPS:OnPlayerMoveEnd(player) end
 
 --]]
+--[[ AIM CALLBAKCS ]]
+
+--[[Called when player starts aiming.
+    ]]
+---@param player    EntityPlayer
+function INITIAL_PROPS:OnPlayerAimStart(player) end
+
+--[[Called on every tick of player aiming.
+    ]]
+---@param player    EntityPlayer
+function INITIAL_PROPS:OnPlayerAimUpdate(player) end
+
+--[[Called on every tick of player aiming.
+    ]]
+---@param player EntityPlayer
+function INITIAL_PROPS:OnPlayerAimEnd(player) end
+
+--]]
 
 ---Back to original type to prevent breaking inference
 ---@cast INITIAL_PROPS MeleeWeaponProps
