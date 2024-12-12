@@ -80,6 +80,7 @@ end
 
 include "lib.MeleeWeaponApi.EntityMelee.Charge"
 include "lib.MeleeWeaponApi.EntityMelee.Properties"
+include "lib.MeleeWeaponApi.EntityMelee.Rotation"
 include "lib.MeleeWeaponApi.EntityMelee.State"
 include "lib.MeleeWeaponApi.EntityMelee.Swing"
 
