@@ -16,6 +16,17 @@ local Util = Api.Util or {}
 Api.Util = Util
 
 ---@param direction Direction
+function Util.DirectionToString(direction)
+    return Util.When(direction, {
+        [Direction.LEFT] = "LEFT",
+        [Direction.RIGHT] = "RIGHT",
+        [Direction.UP] = "UP",
+        [Direction.DOWN] = "DOWN",
+        [Direction.NO_DIRECTION] = "NO_DIRECTION",
+    })
+end
+
+---@param direction Direction
 function Util.DirectionToAngleDegrees(direction)
     return Util.When(direction, {
         [Direction.LEFT] = 180,
