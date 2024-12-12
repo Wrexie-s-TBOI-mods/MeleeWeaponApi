@@ -1,3 +1,14 @@
+local mod = require "lib.MeleeWeaponApi.mod" ---@class MeleeWeaponApiModReference
+
+---@class MeleeWeaponApi
+local Api = mod.__Api or {}
+mod.__Api = Api
+
+local Util = Api.Util or {}
+Api.Util = Util
+
+--[[ INSPECT MODULE CODE ]]
+
 local _tl_compat
 if (tonumber((_VERSION or ""):match "[%d.]*$") or 0) < 5.3 then
     local p, m = pcall(require, "compat53.module")
@@ -309,6 +320,8 @@ function Inspector:putValue(v)
     end
 end
 
+---@param root      any
+---@param options?  InspectOptions
 function inspect.inspect(root, options)
     options = options or {}
 
@@ -376,4 +389,12 @@ setmetatable(inspect, {
     end,
 })
 
-return inspect
+--]]
+
+---@class InspectOptions
+---@field depth     integer
+---@field newline   string
+---@field indent    string
+---@field process   unknown Idk what that's for, really
+
+Util.Inspect = inspect.inspect

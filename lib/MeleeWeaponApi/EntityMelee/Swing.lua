@@ -6,8 +6,6 @@
 -- You should have received a copy of the license along with this
 -- work. If not, see <https://creativecommons.org/licenses/by-nc-sa/4.0/>.
 
-local inspect = include "lib.inspect"
-
 local mod = require "lib.MeleeWeaponApi.mod" ---@class MeleeWeaponApiModReference
 
 local Util = mod.__Api and mod.__Api.Util or include "lib.MeleeWeaponApi.Util.init"

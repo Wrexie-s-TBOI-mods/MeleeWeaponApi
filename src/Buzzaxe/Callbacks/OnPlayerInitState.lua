@@ -8,13 +8,14 @@
 
 local mod = require "src.mod"
 local Buzzaxe = mod.__Buzzaxe or include "src.Buzzaxe.Buzzaxe"
-local inspect = include "lib.inspect"
+
+local Util = MeleeWeaponApi.Util
 
 ---@param _mod      KriegModReference
 ---@param player    EntityPlayer
 local function OnPlayerInitState(_mod, player)
     Buzzaxe:InitState(player)
-    print(inspect(Buzzaxe.state[player]))
+    print(Util.inspect(Buzzaxe.state[player]))
 end
 
 ---@type ModCallbackModule
