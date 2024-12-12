@@ -130,7 +130,15 @@ Starts with **Buzzaxe** as pocket active item.
   - [ ] Prevent registering the same callbacks *again* on `luamod`
 - [x] Make `EntityWeapon` a subclass of `EntityEffect`
 - [ ] EntityMelee
-  - [ ] Smooth rotation
+  - [ ] Docs
+    - [ ] Generate webview docs from comments
+    - [ ] Doc-comment *everything*
+    - [ ] Mention parent ModCallback that runs EntityMelee property callbacks (useful for things like tick rate etc)
+  - [ ] Sprite rotation
+    - [ ] `:Rotate()` — I still don't know if rotating the effect with the sprite is necessary
+    - [ ] `:SmootRotate()`
+    - [ ] User friendly interpolation formula integration — with default(s)
+      - [ ] Bézier generator ?
   - [ ] Swing
     - [x] Animate
     - [ ] Swing direction
