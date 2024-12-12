@@ -101,8 +101,8 @@ end
     If `index` is `nil`, sets it to the first of chosen order.  
     Does nothing if chosen order is "Random".
     ]]
----@param index integer
-function IterableList:SetCurrent(index)
+---@param index? integer
+function IterableList:SetCurrentIndex(index)
     if self.__order == "Random" then return end
 
     if index == nil then

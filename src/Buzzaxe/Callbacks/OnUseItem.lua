@@ -34,8 +34,6 @@ local function OnUseItem(_mod, item, rng, player, flags, slot, custom)
 
     if state.beast and player:CanPickRedHearts() then player:AddHearts(player:GetMaxHearts()) end
 
-    axe:Swing(axe.CustomData.Animations.Swing:Next())
-
     return {
         ShowAnim = true,
         Remove = false,

@@ -15,7 +15,7 @@ local Util = MeleeWeaponApi.Util
 ---@param player    EntityPlayer
 local function OnPlayerInitState(_mod, player)
     Buzzaxe:InitState(player)
-    print(Util.inspect(Buzzaxe.state[player]))
+    print(Util.Inspect(Buzzaxe.state[player]))
 end
 
 ---@type ModCallbackModule

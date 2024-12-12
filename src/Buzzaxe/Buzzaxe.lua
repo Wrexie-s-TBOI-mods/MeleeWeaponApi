@@ -19,17 +19,73 @@ function Buzzaxe:CreateBuzzaxe(player)
     local state = self.state[player]
 
     local axe = MeleeWeaponApi:Create { Spawner = player, Variant = self.Constants.BUZZAXE_ITEM_EFFECT_VARIANT }
-    local custom = {
-        Clock = Util.Clock(30),
-        Animations = {
-            Swing = IterableList { "Swing", "Swing2" },
-            SwingDown = IterableList { "SwingDown", "SwingDown2" },
-        },
+
+    axe:AddEntityFlags(EntityFlag.FLAG_PERSISTENT | EntityFlag.FLAG_DONT_OVERWRITE)
+
+    local scale = player.SpriteScale
+    local offsetX = Vector(-0.5, 0) * scale
+    local offsetY = Vector(0, -0.75) * scale
+    local offset = offsetX + offsetY
+    axe.SpriteOffset = offset
+    axe.Capsules = { "AxeHit", "WooshHit" }
+
+    axe.AimRotationOffset = -90
+    axe.MovementRotationOffset = -90
+
+    axe.CustomData.Clock = Util.Clock(30)
+    axe.CustomData.Animations = {
+        CurrentSwing = nil, ---@type IterableList
+        Swing = IterableList { "Swing", "Swing2" },
+        SwingDown = IterableList { "SwingDown", "SwingDown2" },
     }
 
-    axe.CustomData = custom
-    axe.DepthOffset = player.DepthOffset + 1
-    axe.Capsules = { "AxeHit", "WooshHit" }
+    ---@param weapon EntityMelee
+    ---@param player EntityPlayer
+    ---@param angle  number
+    function AdjustRotationAndOffsets(weapon, player, angle)
+        local state = weapon:GetState()
+        local depth = Util.When(state.PlayerHeadDirection, {
+            [Direction.UP] = -1,
+            [Direction.LEFT] = -1,
+            [Direction.DOWN] = 1,
+            [Direction.RIGHT] = 1,
+        })
+
+        weapon:Rotate(angle)
+        weapon.DepthOffset = player.DepthOffset + depth
+    end
+
+    function axe:OnPlayerAimStart(player)
+        local state = self:GetState()
+        if state.IsSwinging or state.IsCharging then return end
+
+        local rotation
+        if player:HasCollectible(CollectibleType.COLLECTIBLE_ANALOG_STICK) then
+            rotation = player:GetAimDirection() --[[@as Vector]]
+            rotation = rotation:GetAngleDegrees()
+        else
+            rotation = Util.DirectionToAngleDegrees(state.PlayerHeadDirection)
+        end
+        AdjustRotationAndOffsets(self, player, rotation + self.AimRotationOffset)
+
+        local sprite = self:GetSprite()
+        local anim = self.CustomData.Animations
+        local swing = state.PlayerHeadDirection == Direction.DOWN and anim.SwingDown or anim.Swing
+
+        if anim.CurrentSwing ~= swing then
+            swing:SetCurrentIndex()
+            anim.CurrentSwing = swing
+        end
+        self:Swing(anim.CurrentSwing:Next())
+    end
+
+    function axe:OnPlayerMoveUpdate(player)
+        local state = self:GetState()
+        if state.IsPlayerAiming or state.IsSwinging then return end
+
+        local rotation = Util.DirectionToAngleDegrees(state.PlayerHeadDirection)
+        AdjustRotationAndOffsets(self, player, rotation + self.MovementRotationOffset)
+    end
 
     function axe:OnSwingHit(target)
         if not target:IsVulnerableEnemy() or not target:IsActiveEnemy() then return end
@@ -47,22 +103,13 @@ function Buzzaxe:CreateBuzzaxe(player)
         SFXManager():Play(SoundEffect.SOUND_SWORD_SPIN)
     end
 
-    function axe:OnSwingEnd()
-        self:StartCharging()
-    end
-
     function axe:OnChargeUpdate()
         self.ChargePercentage = self.ChargePercentage + (100 / 30) * 2
     end
 
-    function axe:OnChargeFull()
-        self:StopCharging()
-    end
-
     function axe:OnChargeRelease()
         self.ChargePercentage = 0
-        local anim = self.CustomData.Animations.Swing
-        self:Swing(anim:Next())
+        self:Swing(self.CustomData.Animations.CurrentSwing:Next())
     end
 
     state.buzzaxe = axe
