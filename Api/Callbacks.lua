@@ -6,4 +6,11 @@
 -- You should have received a copy of the license along with this
 -- work. If not, see <https://creativecommons.org/licenses/by/4.0/>.
 
-include "Api.init"
+local mod = require "Api.mod" ---@class MeleeWeaponApiModReference
+
+local Api = mod.__Api or {}
+Api.Callbacks = mod.__Api.Callbacks or include "Api.Callbacks.CallbackId"
+
+include "Api.Callbacks.init"
+
+return Api.Callbacks

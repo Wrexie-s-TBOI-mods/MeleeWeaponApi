@@ -247,6 +247,7 @@
 	],
 	"diagnostics.disable": [
 		"redefined-local",
-        "unused-local"
+		"unused-local",
+		"duplicate-set-field"
 	]
 }

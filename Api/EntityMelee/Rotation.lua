@@ -1,0 +1,22 @@
+-- MeleeWeaponApi - TBOI: Repentance script extension (c) by Sir Wrexes
+--
+-- MeleeWeaponApi - TBOI: Repentance script extension is licensed under a
+-- Creative Commons Attribution 4.0 International License.
+--
+-- You should have received a copy of the license along with this
+-- work. If not, see <https://creativecommons.org/licenses/by/4.0/>.
+
+local mod = require "Api.mod" ---@class MeleeWeaponApiModReference
+
+---@class EntityMelee
+local EntityMelee = mod.__EntityMelee or {}
+mod.__EntityMelee = EntityMelee
+
+function EntityMelee:Rotate(angle)
+    if not type(angle) == "number" then ---@cast angle Vector
+        angle = angle:GetAngleDegrees()
+    end ---@cast angle number
+
+    self.Rotation = angle
+    self:GetSprite().Rotation = angle
+end

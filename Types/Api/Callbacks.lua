@@ -6,4 +6,14 @@
 -- You should have received a copy of the license along with this
 -- work. If not, see <https://creativecommons.org/licenses/by/4.0/>.
 
-include "Api.init"
+---@meta
+
+-- #selene: allow(unused_variable)
+---@diagnostic disable: unused-local
+
+---@enum MeleeWeaponApi.Callbacks
+local Callbacks = {
+    MC_POST_WEAPON_INIT = nil, ---@type string
+    MC_POST_WEAPON_UPDATE = nil, ---@type string
+    MC_POST_WEAPON_RENDER = nil, ---@type string
+}

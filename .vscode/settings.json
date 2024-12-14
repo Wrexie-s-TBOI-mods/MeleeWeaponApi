@@ -4,8 +4,8 @@
         ".anm2": "xml"
     },
     "licenser.author": "Sir Wrexes",
-    "licenser.license": "CC-BY-NC-SA-4",
-    "licenser.projectName": "BL2 Krieg - TBOI: Repentance character mod",
+    "licenser.license": "CC-BY-4",
+    "licenser.projectName": "MeleeWeaponApi - TBOI: Repentance script extension",
     "stylua.targetReleaseVersion": "latest",
     "maptz.regionfolder": {
         "collapseDefaultRegionsOnOpen": true,
@@ -20,5 +20,18 @@
     "Lua.runtime.special": {
         "LoadModule": "require"
     },
-    "explorer.sortOrderLexicographicOptions": "lower"
+    "explorer.sortOrderLexicographicOptions": "lower",
+    "material-icon-theme.folders.associations": {
+        "Types": "Decorators"
+    },
+    "todo-tree.general.tags": [
+        "BUG",
+        "HACK",
+        "FIXME",
+        "TODO",
+        "XXX",
+        "[ ]",
+        "[x]",
+        "@todo"
+    ]
 }

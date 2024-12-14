@@ -6,4 +6,10 @@
 -- You should have received a copy of the license along with this
 -- work. If not, see <https://creativecommons.org/licenses/by/4.0/>.
 
-include "Api.init"
+---@meta
+
+---@class WeaponRegistryEntry
+---@field props     EntityMeleeProps
+---@field state     EntityMeleeState
+
+---@class MeleeWeaponApiModReference : ModReference
