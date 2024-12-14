@@ -8,7 +8,7 @@
 
 ---@meta
 
--- #selene: allow(unused_variable)
+-- #selene: allow(unused_variable, global_usage)
 ---@diagnostic disable: unused-local
 
 ---@enum MeleeWeaponApi.Callbacks
@@ -17,3 +17,5 @@ local Callbacks = {
     MC_POST_WEAPON_UPDATE = nil, ---@type string
     MC_POST_WEAPON_RENDER = nil, ---@type string
 }
+
+_G.MeleeWeaponApi.Callbacks = Callbacks

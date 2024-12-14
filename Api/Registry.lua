@@ -6,27 +6,24 @@
 -- You should have received a copy of the license along with this
 -- work. If not, see <https://creativecommons.org/licenses/by/4.0/>.
 
-local mod = require "Api.mod" ---@class MeleeWeaponApiModReference
-
----@class WeaponRegistry
----@field [EntityMelee] WeaponRegistryEntry
-local Registry = mod.__Registry or {
-    size = 0,
-}
+---@class Registry
+---@field size          integer
+---@field [EntityMelee] RegistryEntry
+local Registry = mod.__Registry
 
 ---@type metatable
 local Meta = {}
 
----@param table     WeaponRegistry
+---@param table     Registry
 ---@param weapon    EntityMelee
 function Meta.__index(table, weapon)
     local ok, hash = pcall(GetPtrHash, weapon)
     if ok then return table[hash] end
 end
 
----@param table     WeaponRegistry
+---@param table     Registry
 ---@param weapon    EntityMelee
----@param value     WeaponRegistryEntry
+---@param value     RegistryEntry
 function Meta.__newindex(table, weapon, value)
     local hash = GetPtrHash(weapon)
 
@@ -42,5 +39,8 @@ function Meta.__len(table)
     return table.size
 end
 
-mod.__Registry = setmetatable(Registry, Meta)
-return mod.__Registry
+---@diagnostic disable-next-line: inject-field
+Meta.__init = true
+
+---@diagnostic disable-next-line: undefined-field
+if not Registry.__init then setmetatable(Registry, Meta) end

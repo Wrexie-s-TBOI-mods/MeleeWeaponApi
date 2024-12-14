@@ -53,7 +53,7 @@ Requirements:
 ## TODOs in appromixate order of priority
 
 - [x] Find a way to make modules peristent through `include`s
-  - [ ] Leverage global usage and meta typings to get rid of the `x = mod.__x or include "..." // mod.__x = x` pattern
+  - [x] Leverage global usage and meta typings to get rid of the `x = mod.__x or include "..." // mod.__x = x` pattern
   - [x] Prevent registering the same callbacks repeatedly on `luamod`
 - [x] Make `EntityMelee` a subclass of `EntityEffect`
 - [x] Docs

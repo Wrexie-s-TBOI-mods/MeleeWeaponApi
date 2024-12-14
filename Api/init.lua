@@ -6,35 +6,54 @@
 -- You should have received a copy of the license along with this
 -- work. If not, see <https://creativecommons.org/licenses/by/4.0/>.
 
---# selene: allow(global_usage)
-
-local mod = require "Api.mod" ---@class MeleeWeaponApiModReference
-
-local Api = mod.__Api or include "Api.API"
-mod.__Api = Api
-
-_G.MeleeWeaponApi = Api
-
----@type MeleeWeaponApiDebugMode
-local DebugMode = {
-    Nope = 0,
-    Yep = 1,
-    Clean = -1,
-}
-
-function _G.dprint(...)
-    if Api.DebugMode == DebugMode.Nope then return end
-    if Api.DebugMode == DebugMode.Yep then print(...) end
-    if Api.DebugMode == DebugMode.Clean then error("CLEANUP YOUR DEBUG PRINTS, DUMMY.", 1) end
-end
-
---[[
-    Though it might be tempting to sort these alphabetically (I'm looking at you, future Wrexes),
-    don't do it. It might break things. I'm not entirely sure. Maybe I should...
-    NO. RESIST THE TEMPTATION.
-    ]]
 include "Api.Util.init"
 include "Api.EntityMelee.init"
 include "Api.Callbacks.init"
 
-return Api
+---@todo Make this an `include "Api.Registry.init"
+include "Api.Registry"
+include "Api.RegistryManager"
+
+local Api = mod.__Api ---@class MeleeWeaponApi
+local EntityMelee = mod.__EntityMelee
+
+---@param o EntityMeleeCreateOptions
+local function initOptions(o)
+    o.Subtype = o.Subtype or 0
+    o.PosVel = o.PosVel or {}
+    o.PosVel.Position = o.PosVel.Position or o.Spawner:GetPosVel().Position
+    o.PosVel.Velocity = o.PosVel.Velocity or Vector.Zero
+    o.Follow = o.Follow == nil or o.Follow
+    return o
+end
+
+function Api.ValidateOptions()
+    -- @todo Option validation
+end
+
+function Api:Create(options)
+    local Util = self.Util
+    local Callbacks = self.Callbacks
+
+    options = initOptions(options)
+
+    local entity = Isaac.Spawn(
+        EntityType.ENTITY_EFFECT,
+        options.Variant,
+        options.Subtype,
+        options.PosVel.Position,
+        options.PosVel.Velocity,
+        options.Spawner
+    )
+
+    local effect = Util.MustBeEffect(entity)
+    local weapon = EntityMelee:FromEffect(effect)
+
+    if options.Follow then weapon:FollowParent(options.Spawner) end
+
+    local sprite = weapon:GetSprite()
+    sprite.Rotation = Util.DirectionToAngleDegrees(Direction.NO_DIRECTION)
+
+    Isaac.RunCallback(Callbacks.MC_POST_WEAPON_INIT, weapon)
+    return weapon
+end

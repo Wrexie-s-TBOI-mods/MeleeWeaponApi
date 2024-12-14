@@ -24,6 +24,6 @@ local Util = {}
     Encode any Lua data into a human readable string similar to JSON.  
     Credit: http://github.com/kikito/inspect.lua
     ]]
----@param root any
----@param options InspectOptions
+---@param root      any
+---@param options?  InspectOptions
 function Util.Inspect(root, options) end

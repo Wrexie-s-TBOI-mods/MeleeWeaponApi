@@ -5,15 +5,10 @@
 --
 -- You should have received a copy of the license along with this
 -- work. If not, see <https://creativecommons.org/licenses/by/4.0/>.
----@diagnostic disable: duplicate-set-field
 
-local mod = require "Api.mod" ---@class MeleeWeaponApiModReference
+local Util = mod.__Api.Util
 
-local Util = mod.__Api and mod.__Api.Util or include "Api.Util.init"
-
----@class EntityMelee
-local EntityMelee = mod.__EntityMelee or {}
-mod.__EntityMelee = EntityMelee
+local EntityMelee = mod.__EntityMelee ---@class EntityMelee
 
 ---@class EntityMeleeProps
 local INITIAL_PROPS = {

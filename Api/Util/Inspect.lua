@@ -1,10 +1,4 @@
-local mod = require "Api.mod"
-
-local Api = mod.__Api or {}
-mod.__Api = Api
-
-local Util = Api.Util or {}
-Api.Util = Util
+local Util = mod.__Api.Util
 
 --[[ INSPECT MODULE CODE ]]
 

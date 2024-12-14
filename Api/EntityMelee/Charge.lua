@@ -6,10 +6,7 @@
 -- You should have received a copy of the license along with this
 -- work. If not, see <https://creativecommons.org/licenses/by/4.0/>.
 
-local mod = require "Api.mod" ---@class MeleeWeaponApiModReference
-
-local EntityMelee = mod.__EntityMelee or {}
-mod.__EntityMelee = EntityMelee
+local EntityMelee = mod.__EntityMelee
 
 function EntityMelee:StartCharging()
     if self:OnChargeStart() then return end

@@ -6,3 +6,5 @@ globals:
         required: false
   MeleeWeaponApi:
     any: true
+  mod:
+    any: true

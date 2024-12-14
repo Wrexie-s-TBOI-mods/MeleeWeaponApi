@@ -8,4 +8,9 @@
 
 ---@meta
 
+-- #selene: allow(global_usage)
+
 ---@class MeleeWeaponApiUtil
+local Util = {}
+
+_G.MeleeWeaponApi.Util = Util

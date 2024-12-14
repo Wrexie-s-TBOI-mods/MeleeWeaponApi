@@ -6,11 +6,7 @@
 -- You should have received a copy of the license along with this
 -- work. If not, see <https://creativecommons.org/licenses/by/4.0/>.
 
-local mod = require "Api.mod"
-local Api = mod.__Api or include "Api.Api" ---@class MeleeWeaponApi
-
-local Callbacks = Api.Callbacks or {}
-Api.Callbacks = Callbacks
+local Callbacks = mod.__Api.Callbacks
 
 local PREFIX = "WREX.MeleeWeaponApi."
 
@@ -34,5 +30,3 @@ Callbacks.MC_POST_WEAPON_UPDATE = prefix "MC_POST_WEAPON_UPDATE"
 
 ---@alias McPostWeaponRender fun(mod: ModReference, weapon: EntityMelee, direction: Vector)
 Callbacks.MC_POST_WEAPON_RENDER = prefix "MC_POST_WEAPON_RENDER"
-
-return Callbacks

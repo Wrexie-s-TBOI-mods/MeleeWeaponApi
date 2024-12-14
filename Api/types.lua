@@ -8,8 +8,18 @@
 
 ---@meta
 
----@class WeaponRegistryEntry
+-- #selene: allow(global_usage)
+
+---@class RegistryEntry
 ---@field props     EntityMeleeProps
 ---@field state     EntityMeleeState
 
----@class MeleeWeaponApiModReference : ModReference
+---@class ApiModReference : ModReference
+---@field __Api             MeleeWeaponApi
+---@field __EntityMelee     EntityMelee
+---@field __CallbackManager CallbackManager
+---@field __Registry        Registry
+---@field __RegistyManager  RegistryManager
+local mod = {}
+
+_G.mod = mod

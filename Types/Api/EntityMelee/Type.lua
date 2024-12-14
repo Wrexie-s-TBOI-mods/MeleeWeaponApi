@@ -16,6 +16,7 @@ local Util = {}
 
 --[[
     Check that an object is an instance of some Isaac API class.  
+    <br>
     **DISCLAIMER: This is mostly untested, as I didn't have a lot of use for it yet.**
     ]]
 ---@param input unknown

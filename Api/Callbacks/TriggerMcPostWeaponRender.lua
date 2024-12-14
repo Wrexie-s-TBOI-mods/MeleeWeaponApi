@@ -6,12 +6,10 @@
 -- You should have received a copy of the license along with this
 -- work. If not, see <https://creativecommons.org/licenses/by/4.0/>.
 
-local mod = require "Api.mod"
+local Callbacks = mod.__Api.Callbacks
+local RegistryManager = mod.__RegistryManager
 
-local Callbacks = mod.__Api and mod.__Api.Callbacks or include "Api.Callbacks.CallbackId"
-local RegistryManager = mod.__RegistryManager or include "Api.RegistryManager"
-
----@param _mod      MeleeWeaponApiModReference
+---@param _mod      ApiModReference
 ---@param effect    EntityEffect
 ---@param offset    Vector
 local function TriggerMcPostWeaponRender(_mod, effect, offset)

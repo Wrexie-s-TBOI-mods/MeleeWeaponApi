@@ -6,13 +6,7 @@
 -- You should have received a copy of the license along with this
 -- work. If not, see <https://creativecommons.org/licenses/by/4.0/>.
 
-local mod = require "Api.mod"
-
-local Api = mod.__Api or {}
-mod.__Api = Api
-
-local Util = Api.Util or {}
-Api.Util = Util
+local Util = mod.__Api.Util
 
 ---https://wofsauge.github.io/IsaacDocs/rep/RNG.html
 local RNG_SHIFT_INDEX = 35

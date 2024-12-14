@@ -6,18 +6,14 @@
 -- You should have received a copy of the license along with this
 -- work. If not, see <https://creativecommons.org/licenses/by/4.0/>.
 
-local mod = require "Api.mod" ---@class MeleeWeaponApiModReference
-
-local Api = mod.__Api or {}
-mod.__Api = Api
-
-local Util = Api.Util or {}
-Api.Util = Util
+local Util = mod.__Api.Util
 
 local MAX_TICK_DEFAULT = 60
 
----@type TickerClock
+---@class TickerClock
 local Clock = {}
+Clock.__index = Clock
+Clock.__metatable = false
 
 function Clock:Reset(NewMax)
     self.now = 0
@@ -36,7 +32,7 @@ function Clock:Tick(Step)
     return rotations
 end
 
-local function __newindex(_, key)
+function Clock:__newindex(key)
     local msg = "Attempting to manually edit a TickerClock's value at index "
         .. tostring(key)
         .. ".\n"
@@ -47,15 +43,10 @@ end
 function Util.Clock(Max)
     if type(Max) ~= "number" or Max < 1 then Max = MAX_TICK_DEFAULT end
 
-    ---@type TickerClock
     local clock = setmetatable({
         now = 0,
         max = Max,
-    }, {
-        __index = Clock,
-        __newindex = __newindex,
-        __metatable = false,
-    })
+    }, Clock)
 
     return clock
 end

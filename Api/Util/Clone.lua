@@ -6,14 +6,7 @@
 -- You should have received a copy of the license along with this
 -- work. If not, see <https://creativecommons.org/licenses/by/4.0/>.
 
-local mod = require "Api.mod" ---@class MeleeWeaponApiModReference
-
----@class MeleeWeaponApi
-local Api = mod.__Api or {}
-mod.__Api = Api
-
-local Util = Api.Util or {}
-Api.Util = Util
+local Util = mod.__Api.Util
 
 local function __clone(table, cache)
     if type(table) ~= "table" then return table end

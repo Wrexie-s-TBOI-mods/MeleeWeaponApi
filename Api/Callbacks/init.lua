@@ -6,13 +6,12 @@
 -- You should have received a copy of the license along with this
 -- work. If not, see <https://creativecommons.org/licenses/by/4.0/>.
 
-local mod = require "Api.mod" ---@class MeleeWeaponApiModReference
+include "Api.Callbacks.Custom"
 
 local IMPORT_PATH_PREFIX = "Api.Callbacks."
 
----@class MeleeCallbackManager : { [string]: ModCallbackModule }
-local CallbackManager = mod.__CallbackManager or {}
-mod.__CallbackManager = CallbackManager
+---@class CallbackManager : { [string]: ModCallbackModule }
+local CallbackManager = mod.__CallbackManager
 
 ---@alias ModCallbackKey
 ---| ModCallbacks
@@ -100,17 +99,19 @@ function CallbackManager:EntityMeleeIndex(weapon)
     return "EntityMelee@" .. GetPtrHash(weapon)
 end
 
---[[This seems pointless and, technically speaking, it is.
+--------- LOAD CALLBACK MODULES BELOW
+
+--[[
+    This seems pointless and, technically speaking, it is.  
     However, I've set an alias in my VSCode Lua config so that functions named
-    `LoadModule` are treated as an alias of `include`/`require`.
-    That way, I get code completion and validity check on filenames.
+    `LoadModule` are treated as an alias of `include`/`require`.  
+    That way, I get code completion and validity check on filenames.  
     ]]
 ---@param filename string
 local function LoadModule(filename)
     CallbackManager:LoadModule(filename)
 end
 
-LoadModule "ActiveChargeTimer"
 LoadModule "TriggerMcPostWeaponRender"
 LoadModule "TriggerMcPostWeaponUpdate"
 
@@ -118,5 +119,3 @@ LoadModule "EntityMelee.RengerChargebar"
 LoadModule "EntityMelee.TriggerOnCharge"
 LoadModule "EntityMelee.TriggerOnSwing"
 LoadModule "EntityMelee.RegisterPlayerCallbacks"
-
-return CallbackManager

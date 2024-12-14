@@ -6,13 +6,16 @@
 -- You should have received a copy of the license along with this
 -- work. If not, see <https://creativecommons.org/licenses/by/4.0/>.
 
-local mod = require "Api.mod" ---@class MeleeWeaponApiModReference
+include "Api.EntityMelee.Charge"
+include "Api.EntityMelee.Properties"
+include "Api.EntityMelee.Rotation"
+include "Api.EntityMelee.State"
+include "Api.EntityMelee.Swing"
 
-local RegistryManager = mod.__RegistryManager or include "Api.RegistryManager"
-local CallbackManager = mod.__CallbackManager or include "Api.Callbacks.init"
+local RegistryManager = mod.__RegistryManager
+local CallbackManager = mod.__CallbackManager
 
-local EntityMelee = mod.__EntityMelee or {}
-mod.__EntityMelee = EntityMelee
+local EntityMelee = mod.__EntityMelee ---@class EntityMelee
 
 if not EntityMelee.__super then
     local super = getmetatable(EntityEffect).__class ---@type metatable
@@ -58,33 +61,22 @@ if not EntityMelee.__super then
     end)
 end
 
-include "Api.EntityMelee.Properties"
-include "Api.EntityMelee.State"
-
 --[[
     Create an EntityMelee instance from an EntityEffect.
     ]]
 ---@param effect Entity
+---@return EntityMelee
 function EntityMelee:FromEffect(effect)
     effect = assert(effect:ToEffect())
     RegistryManager.Add(effect, self.GetInitialProps(), self.GetInitialState())
-    return effect --[[@as EntityMelee]]
+
+    ---@diagnostic disable-next-line: return-type-mismatch
+    return effect
 end
 
---[[
-    Destroy an @{EntityEffect} instance.
-    ]]
 function EntityMelee:Remove()
     self:__fxcall "Remove"
     RegistryManager.Remove(self)
     CallbackManager:RemoveEntries(self)
     return nil
 end
-
-include "Api.EntityMelee.Charge"
-include "Api.EntityMelee.Properties"
-include "Api.EntityMelee.Rotation"
-include "Api.EntityMelee.State"
-include "Api.EntityMelee.Swing"
-
-return EntityMelee

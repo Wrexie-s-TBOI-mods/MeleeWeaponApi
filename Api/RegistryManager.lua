@@ -6,20 +6,18 @@
 -- You should have received a copy of the license along with this
 -- work. If not, see <https://creativecommons.org/licenses/by/4.0/>.
 
-local mod = require "Api.mod" ---@class MeleeWeaponApiModReference
-
-local Registry = include "Api.Registry"
+local Registry = mod.__Registry
 
 ---TODO: Garbage collection on run end?
 ---TODO: Savestate on run end?
----@class WeaponRegistryManager
+---@class RegistryManager
 local RegistryManager = mod.__RegistryManager or {}
 
 ---@param weapon    EntityEffect|EntityMelee
 ---@param props     EntityMeleeProps
 ---@param state     EntityMeleeState
 function RegistryManager.Add(weapon, props, state)
-    ---@type WeaponRegistryEntry
+    ---@type RegistryEntry
     local reg = {
         props = props,
         state = state,
@@ -52,6 +50,3 @@ function RegistryManager.Remove(weapon)
     assert(Registry[weapon], "Trying to remove a non existent entry")
     Registry[weapon] = nil
 end
-
-mod.__RegistryManager = RegistryManager
-return mod.__RegistryManager

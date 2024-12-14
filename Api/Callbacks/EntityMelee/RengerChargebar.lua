@@ -6,10 +6,9 @@
 -- You should have received a copy of the license along with this
 -- work. If not, see <https://creativecommons.org/licenses/by/4.0/>.
 
-local mod = require "Api.mod"
-local Callbacks = mod.__Api.Callbacks or include "Api.Callbacks.CallbackId"
+local Custom = mod.__Api.Callbacks
 
----@param _mod      MeleeWeaponApiModReference
+---@param _mod      ApiModReference
 ---@param weapon    EntityMelee
 local function RenderChargeBar(_mod, weapon)
     local state = weapon:GetState(true)
@@ -42,7 +41,7 @@ end
 return {
     force = true,
     {
-        key = Callbacks.MC_POST_WEAPON_RENDER,
+        key = Custom.MC_POST_WEAPON_RENDER,
         fn = RenderChargeBar,
     },
 }

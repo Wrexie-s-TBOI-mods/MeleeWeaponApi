@@ -6,15 +6,13 @@
 -- You should have received a copy of the license along with this
 -- work. If not, see <https://creativecommons.org/licenses/by/4.0/>.
 
-local mod = require "Api.mod"
-local Util = mod.__Api and mod.__Api.Util or include "Api.Util.init"
-local Callbacks = mod.__Api and mod.__Api.Callbacks or include "Api.Callbacks.CallbackId"
+local Util = mod.__Api.Util
+local Custom = mod.__Api.Callbacks
 
----@alias PlayerUpdateCallbackFn fun(mod: MeleeWeaponApiModReference, player: EntityPlayer)
+---@alias PlayerUpdateCallbackFn        fun(mod: ApiModReference, player: EntityPlayer)
+---@alias PlayerUpdateCallbackFactory   fun(weapon: EntityMelee, targer: EntityPlayer): PlayerUpdateCallbackFn
 
----@param weapon EntityMelee
----@param target EntityPlayer
----@return PlayerUpdateCallbackFn
+---@type PlayerUpdateCallbackFactory
 local function TriggerOnPlayerAim(weapon, target)
     return function(_mod, player)
         if GetPtrHash(player) ~= GetPtrHash(target) then return end
@@ -44,9 +42,7 @@ local function TriggerOnPlayerAim(weapon, target)
     end
 end
 
----@param weapon EntityMelee
----@param target EntityPlayer
----@return PlayerUpdateCallbackFn
+---@type PlayerUpdateCallbackFactory
 local function TriggerOnPlayerMove(weapon, target)
     return function(_mod, player)
         if GetPtrHash(player) ~= GetPtrHash(target) then return end
@@ -74,7 +70,7 @@ local function TriggerOnPlayerMove(weapon, target)
     end
 end
 
----@param mod       MeleeWeaponApiModReference
+---@param mod       ApiModReference
 ---@param weapon    EntityMelee
 local function RegisterPlayerCallbacks(mod, weapon)
     local player = weapon.SpawnerEntity:ToPlayer()
@@ -99,7 +95,7 @@ end
 return {
     force = true,
     {
-        key = Callbacks.MC_POST_WEAPON_INIT,
+        key = Custom.MC_POST_WEAPON_INIT,
         fn = RegisterPlayerCallbacks,
     },
 }
