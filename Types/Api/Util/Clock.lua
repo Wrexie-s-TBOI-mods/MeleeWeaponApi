@@ -37,6 +37,6 @@ function Clock:Tick(Step) end
     Create a new `TickerClock` instance with given `Max` as its `.max`.
     ]]
 ---@see TickerClock
----@param Max number Ticks required for a full rotation [Default: `60`]
+---@param Max? number Ticks required for a full rotation [Default: `60`]
 ---@return TickerClock
 function Util.Clock(Max) end

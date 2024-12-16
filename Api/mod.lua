@@ -10,7 +10,7 @@
 
 if mod then return mod end
 
-_G.mod = RegisterMod("!!Melee Weapon API", 1) ---@class ApiModReference
+_G.mod = RegisterMod("!![Repentogon] Melee Weapon API", 1) ---@class ApiModReference
 
 mod.__Api = mod.__Api or {
     Util = {},

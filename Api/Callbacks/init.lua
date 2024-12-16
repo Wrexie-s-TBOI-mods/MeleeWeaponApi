@@ -8,6 +8,8 @@
 
 include "Api.Callbacks.Custom"
 
+local mod = include "Api.mod"
+
 local IMPORT_PATH_PREFIX = "Api.Callbacks."
 
 ---@class CallbackManager : { [string]: ModCallbackModule }

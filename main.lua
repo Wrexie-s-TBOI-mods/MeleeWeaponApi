@@ -11,7 +11,7 @@
     `Api.mod` MUST be included before anything else.  
     Also use `require` to ensure caching of the module.
     ]]
-require "Api.mod"
+include "Api.mod"
 
 --[[
     Start the whole initialisation chain.  
