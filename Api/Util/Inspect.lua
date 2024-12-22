@@ -1,4 +1,5 @@
-local Util = mod.__Api.Util
+local mod = include "Api.mod"
+local Util = mod.Api.Util
 
 --[[ INSPECT MODULE CODE ]]
 

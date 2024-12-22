@@ -17,13 +17,3 @@ include "Api.mod"
     Start the whole initialisation chain.  
     ]]
 include "Api.init"
-
---[[
-    Api init is complete, remove mod reference from global namespace.  
-    Keep the empty line between this block comment and the next statement, or else  
-    this will appear as documentation of `_G.mod`.
-
-    selene: allow(global_usage)
-    ]]
-
-_G.mod = nil

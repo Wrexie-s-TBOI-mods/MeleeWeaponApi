@@ -6,8 +6,9 @@
 -- You should have received a copy of the license along with this
 -- work. If not, see <https://creativecommons.org/licenses/by/4.0/>.
 
-local Callbacks = mod.__Api.Callbacks
-local RegistryManager = mod.__RegistryManager
+local mod = include "Api.mod"
+local Callbacks = mod.Api.Callbacks
+local RegistryManager = mod.RegistryManager
 
 ---@param _mod      ApiModReference
 ---@param effect    EntityEffect

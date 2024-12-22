@@ -7,43 +7,41 @@
 -- work. If not, see <https://creativecommons.org/licenses/by/4.0/>.
 
 -- #selene: allow(global_usage)
+---@diagnostic disable: missing-fields
 
-if mod then return mod end
+if MeleeWeaponApi then return _G[MeleeWeaponApi] end
 
-_G.mod = RegisterMod("!![Repentogon] Melee Weapon API", 1) ---@class ApiModReference
+local mod = RegisterMod("!![Repentogon] Melee Weapon API", 1) ---@class ApiModReference
 
-mod.__Api = mod.__Api or {
+mod.Api = {
     Util = {},
     Callbacks = {},
 }
 
-mod.__EntityMelee = mod.__EntityMelee or {}
+mod.EntityMelee = {}
 
-mod.__CallbackManager = mod.__CallbackManager or {}
+mod.CallbackManager = {}
 
-mod.__Registry = mod.__Registry or {
+mod.Registry = {
     size = 0,
 }
 
-mod.__RegistryManager = mod.__RegistryManager or {}
+mod.RegistryManager = {}
 
-_G.MeleeWeaponApi = mod.__Api
+_G.MeleeWeaponApi = mod.Api
+_G[MeleeWeaponApi] = mod
 
-_G.mod = mod
+---@type MeleeWeaponApiDebugMode
+local DebugMode = {
+    Off = 0,
+    On = 1,
+    Cleanup = -1,
+}
 
-if not _G.dprint then
-    ---@type MeleeWeaponApiDebugMode
-    local DebugMode = {
-        Nope = 0,
-        Yep = 1,
-        Clean = -1,
-    }
-
-    function _G.dprint(...)
-        if MeleeWeaponApi.DebugMode == DebugMode.Nope then return end
-        if MeleeWeaponApi.DebugMode == DebugMode.Yep then print(...) end
-        if MeleeWeaponApi.DebugMode == DebugMode.Clean then error("CLEANUP YOUR DEBUG PRINTS, DUMMY.", 1) end
-    end
+function _G.dprint(...)
+    if MeleeWeaponApi.DebugMode == DebugMode.Off then return end
+    if MeleeWeaponApi.DebugMode == DebugMode.On then print(...) end
+    if MeleeWeaponApi.DebugMode == DebugMode.Cleanup then error("CLEANUP YOUR DEBUG PRINTS, DUMMY.", 1) end
 end
 
 return mod

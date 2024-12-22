@@ -29,7 +29,6 @@ Requirements:
 
 > **What did you use to make this ?**  
 > VS Code and the Binding of Isaac extension, StyLua for formatting and Selene for code linting.  
-> Docs are generated from the typings in `Types` using LDoc.  
 <!--  -->
 > **Can I use it for my mod ?**  
 > Of course, that's what it's made for !  
@@ -58,6 +57,9 @@ Requirements:
 - [x] Make `EntityMelee` a subclass of `EntityEffect`
 - [x] Docs
   - [ ] Generate webview docs from comments
+    - **LuaDox**: Requires doubling every `@param` or `@return` with `@tparam` or `@treturn`
+    - **LuaLS**: Completely undocummented and clunky, couldn't get it to work, though potentially best option.
+    Look into [#2977](https://github.com/LuaLS/lua-language-server/issues/2977) [#2997](https://github.com/LuaLS/lua-language-server/issues/2997)
   - [x] Doc-comment *everything*
   - [x] Mention parent ModCallback that runs EntityMelee property callbacks (useful for things like tick rate etc)
 - [ ] EntityMelee
@@ -102,7 +104,7 @@ Requirements:
       - [ ] Custom ?
   - [ ] Sprite rotation
     - [ ] `:Rotate()` — I still don't know if rotating the effect with the sprite is necessary
-    - [ ] `:SmootRotate()`
+    - [ ] `:SmoothRotate()`
     - [ ] User friendly interpolation formula integration — with default(s)
       - [ ] Bézier generator ?
 - [ ] Lock API metatables

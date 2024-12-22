@@ -6,7 +6,8 @@
 -- You should have received a copy of the license along with this
 -- work. If not, see <https://creativecommons.org/licenses/by/4.0/>.
 
-local EntityMelee = mod.__EntityMelee
+local mod = include "Api.mod"
+local EntityMelee = mod.EntityMelee
 
 function EntityMelee:Rotate(angle)
     if not type(angle) == "number" then ---@cast angle Vector
@@ -14,5 +15,5 @@ function EntityMelee:Rotate(angle)
     end ---@cast angle number
 
     self.Rotation = angle
-    self:GetSprite().Rotation = angle
+    self.SpriteRotation = angle
 end

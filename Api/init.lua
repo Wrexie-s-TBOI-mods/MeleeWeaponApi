@@ -6,6 +6,8 @@
 -- You should have received a copy of the license along with this
 -- work. If not, see <https://creativecommons.org/licenses/by/4.0/>.
 
+local mod = include "Api.mod"
+
 include "Api.Util.init"
 include "Api.EntityMelee.init"
 include "Api.Callbacks.init"
@@ -14,8 +16,8 @@ include "Api.Callbacks.init"
 include "Api.Registry"
 include "Api.RegistryManager"
 
-local Api = mod.__Api ---@class MeleeWeaponApi
-local EntityMelee = mod.__EntityMelee
+local Api = mod.Api ---@class MeleeWeaponApi
+local EntityMelee = mod.EntityMelee
 
 ---@param o EntityMeleeCreateOptions
 local function initOptions(o)

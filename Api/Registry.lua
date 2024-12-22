@@ -6,10 +6,12 @@
 -- You should have received a copy of the license along with this
 -- work. If not, see <https://creativecommons.org/licenses/by/4.0/>.
 
+local mod = include "Api.mod"
+
 ---@class Registry
 ---@field size          integer
 ---@field [EntityMelee] RegistryEntry
-local Registry = mod.__Registry
+local Registry = mod.Registry
 
 ---@type metatable
 local Meta = {}

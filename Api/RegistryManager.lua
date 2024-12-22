@@ -6,12 +6,13 @@
 -- You should have received a copy of the license along with this
 -- work. If not, see <https://creativecommons.org/licenses/by/4.0/>.
 
-local Registry = mod.__Registry
+local mod = include "Api.mod"
+local Registry = mod.Registry
 
 ---TODO: Garbage collection on run end?
 ---TODO: Savestate on run end?
 ---@class RegistryManager
-local RegistryManager = mod.__RegistryManager or {}
+local RegistryManager = mod.RegistryManager
 
 ---@param weapon    EntityEffect|EntityMelee
 ---@param props     EntityMeleeProps

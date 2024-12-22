@@ -15,11 +15,8 @@
 ---@field state     EntityMeleeState
 
 ---@class ApiModReference : ModReference
----@field __Api             MeleeWeaponApi
----@field __EntityMelee     EntityMelee
----@field __CallbackManager CallbackManager
----@field __Registry        Registry
----@field __RegistyManager  RegistryManager
-local mod = {}
-
-_G.mod = mod
+---@field Api             MeleeWeaponApi
+---@field EntityMelee     EntityMelee
+---@field CallbackManager CallbackManager
+---@field Registry        Registry
+---@field RegistyManager  RegistryManager

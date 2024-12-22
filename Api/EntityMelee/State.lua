@@ -6,10 +6,11 @@
 -- You should have received a copy of the license along with this
 -- work. If not, see <https://creativecommons.org/licenses/by/4.0/>.
 
-local Util = mod.__Api.Util
-local RegistryManager = mod.__RegistryManager
+local mod = include "Api.mod"
+local Util = mod.Api.Util
+local RegistryManager = mod.RegistryManager
 
-local EntityMelee = mod.__EntityMelee ---@class EntityMelee
+local EntityMelee = mod.EntityMelee ---@class EntityMelee
 
 ---@type EntityMeleeState
 local INITIAL_STATE = {

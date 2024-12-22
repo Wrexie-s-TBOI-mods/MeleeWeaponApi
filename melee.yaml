@@ -6,5 +6,5 @@ globals:
         required: false
   MeleeWeaponApi:
     any: true
-  mod:
+  mwa:
     any: true

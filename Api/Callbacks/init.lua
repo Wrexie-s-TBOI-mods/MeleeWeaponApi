@@ -6,21 +6,20 @@
 -- You should have received a copy of the license along with this
 -- work. If not, see <https://creativecommons.org/licenses/by/4.0/>.
 
-include "Api.Callbacks.Custom"
-
 local mod = include "Api.mod"
+include "Api.Callbacks.Custom"
 
 local IMPORT_PATH_PREFIX = "Api.Callbacks."
 
 ---@class CallbackManager : { [string]: ModCallbackModule }
-local CallbackManager = mod.__CallbackManager
+local CallbackManager = mod.CallbackManager
 
 ---@alias ModCallbackKey
 ---| ModCallbacks
 ---| string
 
 ---@class ModCallbackEntry
----@field key       ModCallbackKey     Key to register the callback for
+---@field key       ModCallbackKey      Key to register the callback for
 ---@field fn        function            Function to execute on callback trigger
 ---@field param?    integer             Filter param
 ---@field priority? CallbackPriority

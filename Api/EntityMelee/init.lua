@@ -6,16 +6,18 @@
 -- You should have received a copy of the license along with this
 -- work. If not, see <https://creativecommons.org/licenses/by/4.0/>.
 
+local mod = include "Api.mod"
+
 include "Api.EntityMelee.Charge"
 include "Api.EntityMelee.Properties"
 include "Api.EntityMelee.Rotation"
 include "Api.EntityMelee.State"
 include "Api.EntityMelee.Swing"
 
-local RegistryManager = mod.__RegistryManager
-local CallbackManager = mod.__CallbackManager
+local RegistryManager = mod.RegistryManager
+local CallbackManager = mod.CallbackManager
 
-local EntityMelee = mod.__EntityMelee ---@class EntityMelee
+local EntityMelee = mod.EntityMelee ---@class EntityMelee
 
 if not EntityMelee.__super then
     local super = getmetatable(EntityEffect).__class ---@type metatable

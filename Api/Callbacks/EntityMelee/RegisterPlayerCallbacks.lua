@@ -6,8 +6,9 @@
 -- You should have received a copy of the license along with this
 -- work. If not, see <https://creativecommons.org/licenses/by/4.0/>.
 
-local Util = mod.__Api.Util
-local Custom = mod.__Api.Callbacks
+local mod = include "Api.mod"
+local Util = mod.Api.Util
+local Custom = mod.Api.Callbacks
 
 ---@alias PlayerUpdateCallbackFn        fun(mod: ApiModReference, player: EntityPlayer)
 ---@alias PlayerUpdateCallbackFactory   fun(weapon: EntityMelee, targer: EntityPlayer): PlayerUpdateCallbackFn
@@ -76,7 +77,7 @@ local function RegisterPlayerCallbacks(mod, weapon)
     local player = weapon.SpawnerEntity:ToPlayer()
     if not player then return end
 
-    mod.__CallbackManager:RegisterEntries(weapon, {
+    mod.CallbackManager:RegisterEntries(weapon, {
         force = true,
         {
             key = ModCallbacks.MC_POST_PLAYER_UPDATE,
