@@ -13,6 +13,7 @@ include "Api.EntityMelee.Properties"
 include "Api.EntityMelee.Rotation"
 include "Api.EntityMelee.State"
 include "Api.EntityMelee.Swing"
+include "Api.EntityMelee.Throw"
 
 local RegistryManager = mod.RegistryManager
 local CallbackManager = mod.CallbackManager
