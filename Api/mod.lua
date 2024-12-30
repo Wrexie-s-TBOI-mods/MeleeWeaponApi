@@ -39,9 +39,11 @@ local DebugMode = {
 }
 
 function _G.dprint(...)
-    if MeleeWeaponApi.DebugMode == DebugMode.Off then return end
-    if MeleeWeaponApi.DebugMode == DebugMode.On then print(...) end
-    if MeleeWeaponApi.DebugMode == DebugMode.Cleanup then error("CLEANUP YOUR DEBUG PRINTS, DUMMY.", 1) end
+    if MeleeWeaponApi.DebugMode == DebugMode.On then
+        print(...)
+    elseif MeleeWeaponApi.DebugMode == DebugMode.Cleanup then
+        error("CLEANUP YOUR DEBUG PRINTS, DUMMY.", 1)
+    end
 end
 
 return mod
